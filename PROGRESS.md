@@ -17,7 +17,7 @@ Diperbarui: 2026-11-09. Catatan awal untuk koordinasi ChatGPT dan Codex.
 - Fitur tetap perlu diuji manual melalui browser dan perangkat printer jika digunakan.
 
 ## Prioritas berikutnya
-- Pengujian Black Box dan dokumentasi hasil untuk TA.
+- Rencana Black Box sudah disusun dalam BLACKBOX_TEST_PLAN.md (25 skenario). Pengujian manual dan bukti belum dilakukan.
 - Pemeriksaan edge case shift kasir, stok, pembayaran, dan pembatasan akses.
 - Penyempurnaan UI/UX dan validasi alur kerja bersama pengguna laundry.
 
