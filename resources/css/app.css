@@ -414,3 +414,31 @@ tbody tr:last-child td { border-bottom: 0; }
 .pagination-page, .pagination-current { min-width:40px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; font-size:13px; }
 .pagination-current { border:1px solid var(--teal-strong); border-radius:8px; background:#edf6f5; color:var(--teal-strong); font-weight:750; }
 .pagination-ellipsis { padding:10px 5px; color:var(--muted); }
+
+/* Session-scoped branch context: always visible, including mobile. */
+.topbar { height:auto; min-height:86px; flex-wrap:wrap; }
+.topbar-branch { flex:1; max-width:340px; min-width:220px; }
+.branch-switcher { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:5px 8px; align-items:end; }
+.branch-switcher label { grid-column:1/-1; font-size:11px; margin:0; color:var(--muted); }
+.branch-switcher select { min-width:0; font-size:12px; padding:10px; }
+.branch-apply { font-size:12px; padding:10px 12px; min-height:46px; }
+.branch-switch-error { grid-column:1/-1; font-size:12px; margin:3px 0 0; }
+.assigned-branch { display:flex; gap:9px; align-items:center; }
+.assigned-branch .icon { color:var(--teal-strong); }
+.assigned-branch small, .assigned-branch strong { display:block; font-size:11px; }
+.assigned-branch small { color:var(--muted); }
+.assigned-branch strong { font-size:12px; overflow-wrap:anywhere; }
+.branch-required > .icon { width:30px; height:30px; color:var(--teal-strong); margin-bottom:16px; }
+.branch-required h2 { font-size:20px; }
+.branch-required p { max-width:65ch; color:var(--muted); font-size:14px; margin-bottom:20px; }
+.context-chip { overflow-wrap:anywhere; max-width:100%; }
+@media(max-width:1100px) {
+ .topbar-branch { order:3; flex-basis:100%; max-width:none; }
+ .branch-switcher { max-width:520px; }
+}
+@media(max-width:600px) {
+ .topbar-branch { min-width:0; }
+ .branch-switcher { max-width:none; }
+ .topbar-location { flex:1; }
+ .assigned-branch { padding:6px 0; }
+}

@@ -24,7 +24,8 @@ Route::middleware('guest')->group(function(){
  Route::get('/login',[AuthController::class,'showLogin'])->name('login');
  Route::post('/login',[AuthController::class,'login'])->name('login.store');
 });
-Route::middleware('auth')->group(function(){
+Route::middleware(['auth','branch.context'])->group(function(){
+ Route::post('/workspace/branch',[\App\Http\Controllers\ActiveBranchController::class,'update'])->middleware('role:owner')->name('active-branch.update');
  Route::post('/logout',[AuthController::class,'logout'])->name('logout');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/shifts',[CashShiftController::class,'index'])->name('shifts.index');

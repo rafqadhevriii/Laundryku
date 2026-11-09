@@ -18,7 +18,7 @@ class ReportController extends Controller {
   ]);
   $start=$input['start']??now()->startOfMonth()->toDateString();
   $end=$input['end']??now()->toDateString();
-  $branch=$input['branch_id']??null;
+  $branch=app(\App\Services\ActiveBranchContext::class)->reportBranch($request,$input['branch_id']??null);
   $orders=Order::where('business_id',$u->business_id)->when($branch,fn($q)=>$q->where('branch_id',$branch))
    ->whereDate('created_at','>=',$start)->whereDate('created_at','<=',$end);
   $payments=Payment::where('status','paid')->whereDate('paid_at','>=',$start)->whereDate('paid_at','<=',$end)

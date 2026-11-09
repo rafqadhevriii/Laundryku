@@ -1,5 +1,14 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-09 (konteks cabang aktif)
+- Menambahkan pengalih cabang Pemilik di header desktop/mobile, mode Semua Cabang dan identitas penugasan Kasir yang read-only.
+- Menambahkan resolver/middleware konteks terpusat, namespace sesi akun/usaha, reset autentikasi, validasi ulang cabang aktif, CSRF dan redirect GET aman. Sesi stale menggagalkan POST mutasi; GET kembali ke agregat dengan peringatan.
+- Menghapus dropdown cabang dalam form pesanan, menurunkan branch_id dari server, membatasi pelanggan, dan membersihkan input lama saat beralih cabang. Pembuatan pelanggan/stok/pengeluaran mengikuti konteks yang sama; histori tidak dipindahkan cabangnya.
+- Menerapkan scope pada dashboard, pesanan/pembayaran/nota, pelanggan, persediaan/koreksi, pengeluaran, shift, rekonsiliasi dan laporan/ekspor; mempertahankan agregat Semua Cabang/filter laporan lama. Filter cabang URL bertentangan ditolak.
+- Menambahkan 11 tes konteks multi-cabang: request/sesi manipulatif, stale/asing/nonaktif, akun bergantian, scope dan pembuatan, laporan serta snapshot pembayaran/shift. Seluruh **69 tes lulus / 671 assertion** di laundryku_testing; build Vite, view:cache dan diff --check lulus.
+- Bukti di `docs/branch-context`: 10 screenshot desktop/mobile, hasil browser/axe dan skrip reproduksi. Keyboard, CSRF, navigasi serta pemisahan Kasir berhasil; nol temuan axe pada tampilan teruji, nol overflow/error JS. Bukan sertifikasi aksesibilitas menyeluruh.
+- Tidak mengubah database utama, migration, model, atau rumus keuangan; tidak menjalankan migrasi manual. Administrasi usaha tetap business-wide dan sesi beberapa tab berbagi pilihan. PR terpisah, tidak merge otomatis.
+
 ## 2026-11-09 (UI/UX Tahap B)
 - Mendesain dashboard Pemilik/Kasir dengan KPI dari data controller, konteks periode/cabang, CTA nyata, prioritas pekerjaan dan empty state. Tidak membuat angka/grafik dekoratif.
 - Mendesain daftar pesanan: pencarian/status GET tetap, badge teks, tabel desktop/kartu mobile, jumlah hasil dan pagination yang menjaga query.

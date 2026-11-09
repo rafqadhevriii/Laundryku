@@ -1,0 +1,1 @@
+<section class="card branch-required"><x-ui.icon name="building"/><h2>Pilih cabang aktif terlebih dahulu</h2><p>Mode Semua Cabang menampilkan ringkasan gabungan. Untuk mencatat data baru, pilih satu cabang melalui pemilih di header lalu tekan Terapkan.</p><x-ui.button href="#active-branch" variant="ghost">Pilih cabang di header</x-ui.button></section>

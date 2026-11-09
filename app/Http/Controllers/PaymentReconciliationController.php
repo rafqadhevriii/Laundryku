@@ -12,7 +12,7 @@ class PaymentReconciliationController extends Controller {
   $user=$request->user()->fresh();
   abort_unless($user?->isOwner() && $user->is_active && $user->business?->is_active,403);
   return Payment::where('method','cash')->where('status','paid')
-   ->whereHas('order',fn($q)=>$q->where('business_id',$user->business_id));
+   ->whereHas('order',fn($q)=>app(\App\Services\ActiveBranchContext::class)->scope($q,$request));
  }
  public function index(Request $request){
   $query=$this->scoped($request);
@@ -22,6 +22,7 @@ class PaymentReconciliationController extends Controller {
    'order_number'=>['nullable','string','max:150'],
    'review'=>['nullable',Rule::in(['all','unreviewed','unallocated'])],
   ]);
+  $filters['branch_id']=app(\App\Services\ActiveBranchContext::class)->reportBranch($request,$filters['branch_id']??null);
   if(!empty($filters['branch_id']))$query->whereHas('order',fn($q)=>$q->where('branch_id',$filters['branch_id']));
   if(!empty($filters['order_number']))$query->whereHas('order',fn($q)=>$q->where('order_number','like','%'.$filters['order_number'].'%'));
   if(!empty($filters['start']))$query->whereDate('paid_at','>=',$filters['start']);
@@ -37,7 +38,7 @@ class PaymentReconciliationController extends Controller {
   if(($filters['review']??'all')==='unreviewed')$unassigned->whereNull('reconciliation_status');
   if(($filters['review']??'all')==='unallocated')$unassigned->where('reconciliation_status','unallocated');
   $payments=$unassigned->with(['order.branch','recorder','reconciler'])->latest('paid_at')->paginate(15)->withQueryString();
-  $shifts=CashShift::where('business_id',$request->user()->business_id)->where('status','open')->with('cashier')->get();
+  $shifts=app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request)->where('status','open')->with('cashier')->get();
   $branches=$request->user()->business->branches()->orderBy('name')->get();
   return view('payments.reconciliation',compact('payments','shifts','branches','history','summary'));
  }
@@ -52,7 +53,7 @@ class PaymentReconciliationController extends Controller {
    // Urutan lock shift -> payment juga aman terhadap penutupan shift.
    $shift=null;
    if($data['decision']==='assign'){
-    $shift=CashShift::where('business_id',$request->user()->business_id)->whereKey($data['cash_shift_id'])->lockForUpdate()->firstOrFail();
+    $shift=app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request)->whereKey($data['cash_shift_id'])->lockForUpdate()->firstOrFail();
    }
    $p=$this->scoped($request)->with('order')->lockForUpdate()->findOrFail($payment);
    if($p->cash_shift_id!==null || $p->reconciliation_status==='assigned')throw ValidationException::withMessages(['decision'=>'Pembayaran sudah dihubungkan ke shift. Keputusan tidak dapat diulang.']);

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller {
  public function index(Request $request) {
   $user=$request->user()->loadMissing('business','branch');
-  $branch=$user->isCashier()?$user->branch_id:null;
+  $branch=app(\App\Services\ActiveBranchContext::class)->id($request);
   $orders=Order::where('business_id',$user->business_id)->when($branch,fn($q)=>$q->where('branch_id',$branch));
   $payments=Payment::whereHas('order',fn($q)=>$q->where('business_id',$user->business_id)->when($branch,fn($q)=>$q->where('branch_id',$branch)));
   $expenses=Expense::where('business_id',$user->business_id)->when($branch,fn($q)=>$q->where('branch_id',$branch));
@@ -25,8 +25,8 @@ class DashboardController extends Controller {
    ['label'=>'Pembayaran diterima hari ini','value'=>'Rp '.number_format((clone $payments)->where('status','paid')->where('paid_at','>=',$today)->sum('amount'),0,',','.')],
    ['label'=>'Pengeluaran hari ini','value'=>'Rp '.number_format((clone $expenses)->whereDate('expense_date',today())->sum('amount'),0,',','.')],
   ];
-  if($user->isOwner())array_unshift($stats,['label'=>'Cabang aktif','value'=>$user->business->branches()->where('is_active',true)->count()]);
-  else $stats[]=['label'=>'Shift berjalan','value'=>CashShift::where('cashier_id',$user->id)->where('status','open')->exists()?'Aktif':'Belum dibuka'];
+  if($user->isOwner())array_unshift($stats,['label'=>'Cabang aktif','value'=>$user->business->branches()->where('is_active',true)->when($branch,fn($q)=>$q->whereKey($branch))->count()]);
+  else $stats[]=['label'=>'Shift berjalan','value'=>app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request)->where('cashier_id',$user->id)->where('status','open')->exists()?'Aktif':'Belum dibuka'];
   $recent=(clone $orders)->with('customer')->latest()->limit(8)->get();
   $overdue=(clone $orders)->with('customer','branch')->whereIn('status',['received','processing'])->whereNotNull('estimated_at')->where('estimated_at','<',now())->orderBy('estimated_at')->limit(6)->get();
   $ready=(clone $orders)->with('customer','branch')->where('status','ready')->oldest('updated_at')->limit(6)->get();

@@ -2,15 +2,18 @@
 @section('title','Stok Bahan Laundry')
 @section('content')
 @if(auth()->user()->isOwner())
+@if($activeBranchId===null)<x-ui.branch-required/>
+@else
 <div class="card" style="margin-bottom:20px"><h2>Tambah barang stok</h2>
 <form method="POST" action="{{ route('inventory.store') }}">@csrf
 <div class="grid">
 <div><label for="name">Nama barang</label><input id="name" name="name" required value="{{ old('name') }}"></div>
-<div><label for="branch_id">Cabang</label><select id="branch_id" name="branch_id" required><option value="">Pilih cabang</option>@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select></div>
+<div><p class="context-chip">Cabang aktif: {{ $activeBranchLabel }}</p></div>
 <div><label for="category">Kategori</label><select id="category" name="category">@foreach(['Deterjen','Pewangi dan pelembut','Pemutih dan bahan khusus','Kemasan dan hanger','Operasional lain'] as $cat)<option value="{{ $cat }}">{{ $cat }}</option>@endforeach</select></div>
 <div><label for="unit">Satuan</label><input id="unit" name="unit" placeholder="Liter, kg, pcs" required></div>
 <div><label for="minimum_quantity">Batas minimum</label><input id="minimum_quantity" name="minimum_quantity" type="number" min="0" step="0.01" required value="0"></div>
 </div><button style="margin-top:15px">Simpan Barang</button></form></div>
+@endif
 @endif
 <div class="card"><h2>Daftar persediaan</h2>
 <div style="overflow:auto"><table><thead><tr><th>Barang</th><th>Cabang</th><th>Kategori</th><th>Stok</th><th>Minimum</th><th>Status</th><th>Mutasi / Koreksi</th></tr></thead><tbody>

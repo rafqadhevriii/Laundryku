@@ -1,0 +1,90 @@
+[
+  {
+    "viewport": "desktop",
+    "page": "all-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "desktop",
+    "page": "all-order-gate",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "desktop",
+    "page": "branch-a-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "desktop",
+    "page": "branch-b-order",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "desktop",
+    "page": "cashier-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "desktop",
+    "checks": [
+      "CSRF 419",
+      "All mode creation gate",
+      "context persists across pages",
+      "B customer filter",
+      "no duplicate order branch field",
+      "keyboard switch",
+      "cashier assignment only",
+      "no JavaScript errors"
+    ],
+    "passed": true
+  },
+  {
+    "viewport": "mobile",
+    "page": "all-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "mobile",
+    "page": "all-order-gate",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "mobile",
+    "page": "branch-a-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "mobile",
+    "page": "branch-b-order",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "mobile",
+    "page": "cashier-dashboard",
+    "violations": [],
+    "horizontalOverflow": false
+  },
+  {
+    "viewport": "mobile",
+    "checks": [
+      "CSRF 419",
+      "All mode creation gate",
+      "context persists across pages",
+      "B customer filter",
+      "no duplicate order branch field",
+      "keyboard switch",
+      "cashier assignment only",
+      "no JavaScript errors"
+    ],
+    "passed": true
+  }
+]

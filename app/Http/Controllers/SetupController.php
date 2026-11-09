@@ -27,6 +27,7 @@ class SetupController extends Controller {
    return User::create(['business_id'=>$business->id,'branch_id'=>null,'name'=>$data['owner_name'],
     'username'=>$data['username'],'email'=>$data['email'],'password'=>$data['password'],'role'=>'owner','is_active'=>true]);
   });
+  app(\App\Services\ActiveBranchContext::class)->reset($request);
   Auth::login($owner); $request->session()->regenerate();
   return redirect()->route('dashboard')->with('success','Usaha Laundryku berhasil disiapkan.');
  }

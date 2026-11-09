@@ -5,7 +5,10 @@
 <p>Periksa bukti sebelum memilih shift. Pembayaran tidak dihubungkan otomatis. Hanya shift terbuka pada cabang yang sama dan mencakup waktu pembayaran yang dapat dipilih. Nilainya akan masuk perhitungan saat shift ditutup.</p>
 <p>Shift yang sudah ditutup/ditinjau bersifat final dan tidak dihitung ulang di halaman ini. Jika atribusi tidak dapat diselesaikan, tandai <strong>historis belum teralokasi</strong> dengan alasan. Uang tersebut tetap masuk pendapatan satu kali, tetapi tidak masuk kas shift dan tidak lagi memblokir penutupan.</p>
 <form method="GET" class="grid">
+@if($activeBranchId===null)
 <div><label>Cabang</label><select name="branch_id"><option value="">Semua cabang</option>@foreach($branches as $branch)<option value="{{ $branch->id }}" @selected(request('branch_id')==$branch->id)>{{ $branch->name }}</option>@endforeach</select></div>
+@else<div><p class="field-hint">Cabang rekonsiliasi</p><p class="context-chip">{{ $activeBranchLabel }}</p></div>@endif
+
 <div><label>Dari tanggal bayar</label><input type="date" name="start" value="{{ request('start') }}"></div>
 <div><label>Sampai tanggal bayar</label><input type="date" name="end" value="{{ request('end') }}"></div>
 <div><label>Nomor pesanan</label><input name="order_number" value="{{ request('order_number') }}" maxlength="150"></div>
