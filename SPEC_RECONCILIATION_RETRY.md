@@ -1,7 +1,7 @@
 # Spesifikasi Rekonsiliasi Pembayaran Historis dan Pengajuan Ulang Digital
 
 Tanggal: 2026-11-09
-Status: rancangan untuk implementasi Codex, belum diimplementasikan.
+Status: diimplementasikan pada branch feat/reconciliation-payment-retry, menunggu review PR.
 
 ## Tujuan
 Menangani pembayaran tunai historis dengan cash_shift_id NULL tanpa mengarang atribusi shift, serta mengizinkan kasir mengajukan ulang pembayaran digital yang ditolak secara aman.
@@ -42,3 +42,10 @@ Menangani pembayaran tunai historis dengan cash_shift_id NULL tanpa mengarang at
 - Jalankan pengujian di laundryku_testing.
 - Perbarui PROGRESS.md, CHANGELOG.md, dan BLACKBOX_TEST_PLAN.md setelah implementasi.
 - Kerjakan pada branch baru, ajukan PR, jangan merge otomatis.
+
+## Keputusan implementasi
+- Memilih opsi pembatasan pengaitan ke shift belum final: hanya open. Shift submitted/reviewed ditolak tanpa mengubah saldo/selisih. UI menjelaskan pembatasan dan opsi pengecualian historis dengan alasan wajib; tidak ada koreksi saldo final pada fitur ini.
+- Keputusan unallocated dapat ditindaklanjuti menjadi assigned jika ada bukti baru dan shift masih valid. Pengaitan tidak dapat dipindah/diulang; audit semua keputusan terdahulu tetap ada.
+- Payment tetap satu baris per pesanan. Tabel payment_attempts menyimpan percobaan dan penolakan; snapshot legacy dibuat saat ditindaklanjuti berdasarkan data yang masih tersedia. Tidak merekonstruksi penolakan sebelum versi ini yang tidak lagi tersedia.
+- Aturan digital-only juga berlaku pada endpoint pembayaran lama, termasuk untuk Pemilik. Tunai baru dengan shift aktif tetap berjalan.
+- Hasil validasi dan batas pengujian dicatat pada PROGRESS.md dan BLACKBOX_TEST_PLAN.md. Tidak menjalankan migrasi pada database utama.

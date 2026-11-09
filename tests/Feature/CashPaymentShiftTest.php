@@ -112,17 +112,17 @@ class CashPaymentShiftTest extends TestCase {
   $this->actingAs($this->owner)->get(route('orders.show',$this->order()->id))->assertOk()->assertSee('name="cash_shift_id"',false)->assertSee('value="'.$shift->id.'"',false)->assertDontSee('KasirRahasia');
  }
 
- public function test_rejected_digital_payment_can_still_be_replaced_by_owner_cash_in_selected_shift():void {
+ public function test_owner_retries_rejected_digital_payment_as_pending_without_entering_cash_shift():void {
   $shift=$this->open($this->a);$order=$this->order();
   $this->actingAs($this->a)->post(route('payments.store',$order->id),['method'=>'transfer'])->assertSessionHasNoErrors()->assertRedirect();
   $this->actingAs($this->owner)->patch(route('payments.reject',$order->id),['notes'=>'Belum diterima'])->assertSessionHasNoErrors()->assertRedirect();
   $id=Payment::where('order_id',$order->id)->value('id');
-  $this->pay($this->owner,$order,['cash_shift_id'=>$shift->id]);
+  $this->post(route('payments.retry',$order->id),['method'=>'qris'])->assertSessionHasNoErrors()->assertRedirect();
   $this->assertDatabaseCount('payments',1);
-  $this->assertDatabaseHas('payments',['id'=>$id,'cash_shift_id'=>$shift->id,'method'=>'cash','status'=>'paid']);
-  $this->assertDatabaseHas('audit_logs',['action'=>'payment.recorded','subject_id'=>$id]);
-  $this->actingAs($this->a)->patch(route('shifts.close',$shift->id),['closing_cash'=>124000])->assertSessionHasNoErrors()->assertRedirect();
-  $this->assertDatabaseHas('cash_shifts',['id'=>$shift->id,'expected_cash'=>124000,'difference'=>0]);
+  $this->assertDatabaseHas('payments',['id'=>$id,'cash_shift_id'=>null,'method'=>'qris','status'=>'pending']);
+  $this->assertDatabaseHas('audit_logs',['action'=>'payment.retried','subject_id'=>$id]);
+  $this->actingAs($this->a)->patch(route('shifts.close',$shift->id),['closing_cash'=>100000])->assertSessionHasNoErrors()->assertRedirect();
+  $this->assertDatabaseHas('cash_shifts',['id'=>$shift->id,'expected_cash'=>100000,'difference'=>0]);
  }
 
 }

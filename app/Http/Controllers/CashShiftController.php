@@ -37,7 +37,7 @@ class CashShiftController extends Controller {
    // Jangan tutup dengan angka lebih kecil jika shift lama masih memuat
    // pembayaran sebelum pengaitan shift diperkenalkan. Tidak menebak pemiliknya.
    $unassigned=Payment::whereNull('cash_shift_id')->where('method','cash')->where('status','paid')
-    ->where('paid_at','>=',$s->opened_at)
+    ->whereNull('reconciliation_status')->whereBetween('paid_at',[$s->opened_at,now()])
     ->whereHas('order',fn($q)=>$q->where('business_id',$s->business_id)->where('branch_id',$s->branch_id))->exists();
    if($unassigned) throw ValidationException::withMessages(['closing_cash'=>'Ada pembayaran tunai lama tanpa shift pada periode ini. Minta Pemilik merekonsiliasi data sebelum menutup shift.']);
    $cash=$s->payments()->where('method','cash')->where('status','paid')->sum('amount');

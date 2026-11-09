@@ -1,5 +1,15 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-09 (rekonsiliasi historis dan retry digital)
+- Menambahkan halaman khusus Pemilik untuk pembayaran tunai historis: filter cabang/tanggal/nomor, pengaitan eksplisit ke shift terbuka yang sesuai, pengecualian belum teralokasi dengan alasan wajib, ringkasan, dan laporan keputusan.
+- Setiap keputusan direkam dengan aktor/waktu/alasan/status sebelum-sesudah/shift tujuan. Pengaitan ganda dan pengaitan ke shift final ditolak; saldo final tidak dihitung ulang. Pengecualian ditinjau tidak lagi memblokir penutupan dan tetap tidak masuk kas shift. Pendapatan tetap menghitung pembayaran lunas sekali.
+- Mengizinkan retry rejected oleh Kasir dalam cabangnya dan Pemilik dalam usahanya. Sesuai spesifikasi, hanya transfer/QRIS, selalu pending, nominal dari total pesanan; konfirmasi ulang Pemilik tetap wajib. Endpoint lama juga menerapkan aturan ini, termasuk menolak penggantian rejected menjadi tunai.
+- Menambahkan riwayat payment_attempts untuk menjaga referensi, catatan awal, alasan penolakan, aktor dan waktu setiap percobaan. Snapshot pembayaran lama dibuat saat ditindaklanjuti tanpa menebak riwayat yang sudah tidak tersedia. Tampilan pesanan mempertahankan alasan penolakan dan riwayat setelah retry.
+- Migrasi tambahan hanya disiapkan: kolom rekonsiliasi nullable dan tabel percobaan, tanpa backfill/perubahan/penghapusan data nyata. Tidak menjalankan migrasi manual atau mengakses database utama.
+- File: controller PaymentReconciliation/Payment/CashShift/Order, model Payment/PaymentAttempt, migrasi 160000, routes, view payments/reconciliation dan orders/show/layout, PaymentReconciliationTest, DigitalPaymentRetryTest, CashPaymentShiftTest, PaymentFixtures, pengaman TestCase/phpunit, PROGRESS, AUDIT_PAYMENT_SHIFT, SPEC_RECONCILIATION_RETRY, dan BLACKBOX_TEST_PLAN.
+- Hasil sebenarnya: **46 tes lulus, 401 assertions** pada laundryku_testing terisolasi (PHP 8.5.12/MariaDB 11), view:cache dan diff --check berhasil. Uji browser otomatis Playwright/Chromium berhasil untuk rekonsiliasi, validasi alasan, retry, riwayat, akses Kasir 403, dan konfirmasi ulang.
+- Keterbatasan: belum diuji manual oleh pengguna/printer atau konkurensi multiproses; pengaitan/koreksi saldo shift final tidak tersedia. Lanjutkan review PR, pengujian pengguna, dan rencana penerapan; jangan merge otomatis.
+
 ## 2026-11-09 (perbaikan pembayaran tunai dan shift)
 - Mengikat setiap pembayaran tunai baru ke satu `cash_shift_id`. Kasir harus memiliki shift aktif sendiri; Pemilik memilih shift aktif pada usaha/cabang pesanan.
 - Penutupan menjumlah pembayaran berdasarkan ID shift, sehingga shift kasir tumpang tindih tidak menghitung uang yang sama. Penguncian baris shift menyelaraskan pembayaran dengan penutupan; perlindungan pembayaran ganda tetap berlaku.

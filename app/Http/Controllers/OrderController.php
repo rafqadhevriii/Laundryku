@@ -76,7 +76,7 @@ class OrderController extends Controller {
   return redirect()->route('orders.show',$order->id)->with('success','Pesanan berhasil dibuat.');
  }
  public function show(Request $request,int $order) {
-  $order=$this->scoped($request)->with(['customer','branch','items','creator','payment'])->findOrFail($order);
+  $order=$this->scoped($request)->with(['customer','branch','items','creator','payment.attempts.recorder','payment.attempts.confirmer'])->findOrFail($order);
   $cashShifts=$request->user()->isOwner()
    ? \App\Models\CashShift::where('business_id',$order->business_id)->where('branch_id',$order->branch_id)->where('status','open')->with('cashier')->get()
    : collect();

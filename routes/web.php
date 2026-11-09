@@ -44,12 +44,15 @@ Route::middleware('auth')->group(function(){
  Route::get('/orders/{order}',[OrderController::class,'show'])->name('orders.show');
  Route::get('/orders/{order}/receipt',[ReceiptController::class,'show'])->name('orders.receipt');
  Route::patch('/orders/{order}/status',[OrderController::class,'updateStatus'])->name('orders.status');
+ Route::post('/orders/{order}/payment/retry',[PaymentController::class,'retry'])->name('payments.retry');
  Route::post('/orders/{order}/payment',[PaymentController::class,'store'])->name('payments.store');
  Route::middleware('role:owner')->group(function(){
   Route::patch('/orders/{order}/payment/confirm',[PaymentController::class,'confirm'])->name('payments.confirm');
   Route::patch('/orders/{order}/payment/reject',[PaymentController::class,'reject'])->name('payments.reject');
  });
  Route::middleware('role:owner')->prefix('owner')->name('owner.')->group(function(){
+  Route::get('/payment-reconciliation',[\App\Http\Controllers\PaymentReconciliationController::class,'index'])->name('reconciliation.index');
+  Route::patch('/payment-reconciliation/{payment}',[\App\Http\Controllers\PaymentReconciliationController::class,'update'])->name('reconciliation.update');
   Route::get('/audit-logs',[AuditLogController::class,'index'])->name('audit.index');
   Route::get('/reports',[ReportController::class,'index'])->name('reports.index');
   Route::get('/operational-reports',[OperationalReportController::class,'index'])->name('operational.index');
