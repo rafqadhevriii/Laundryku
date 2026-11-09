@@ -34,11 +34,13 @@ class CashShiftController extends Controller {
   DB::transaction(function()use($request,$shift,$data){
    $s=$this->scoped($request)->lockForUpdate()->findOrFail($shift);
    abort_unless($s->cashier_id===$request->user()->id && $s->status==='open',403);
-   $cash=Payment::query()->join('orders','orders.id','=','payments.order_id')
-    ->where('orders.branch_id',$s->branch_id)->where('orders.business_id',$s->business_id)
-    ->where('payments.method','cash')->where('payments.status','paid')
-    ->where('payments.paid_at','>=',$s->opened_at)->where('payments.paid_at','<=',now())
-    ->sum('payments.amount');
+   // Jangan tutup dengan angka lebih kecil jika shift lama masih memuat
+   // pembayaran sebelum pengaitan shift diperkenalkan. Tidak menebak pemiliknya.
+   $unassigned=Payment::whereNull('cash_shift_id')->where('method','cash')->where('status','paid')
+    ->where('paid_at','>=',$s->opened_at)
+    ->whereHas('order',fn($q)=>$q->where('business_id',$s->business_id)->where('branch_id',$s->branch_id))->exists();
+   if($unassigned) throw ValidationException::withMessages(['closing_cash'=>'Ada pembayaran tunai lama tanpa shift pada periode ini. Minta Pemilik merekonsiliasi data sebelum menutup shift.']);
+   $cash=$s->payments()->where('method','cash')->where('status','paid')->sum('amount');
    $expected=round((float)$s->opening_cash+(float)$cash,2);
    $s->update(['closing_cash'=>$data['closing_cash'],'expected_cash'=>$expected,'difference'=>round((float)$data['closing_cash']-$expected,2),'status'=>'submitted','closed_at'=>now(),'notes'=>$data['notes']??null]);
    AuditLog::create(['business_id'=>$s->business_id,'user_id'=>$request->user()->id,'action'=>'shift.closed','subject_type'=>'cash_shift','subject_id'=>$s->id,'details'=>['branch_id'=>$s->branch_id,'expected_cash'=>$s->expected_cash,'closing_cash'=>$s->closing_cash,'difference'=>$s->difference]]);

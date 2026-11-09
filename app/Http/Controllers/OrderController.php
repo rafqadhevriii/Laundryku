@@ -77,7 +77,10 @@ class OrderController extends Controller {
  }
  public function show(Request $request,int $order) {
   $order=$this->scoped($request)->with(['customer','branch','items','creator','payment'])->findOrFail($order);
-  return view('orders.show',compact('order'));
+  $cashShifts=$request->user()->isOwner()
+   ? \App\Models\CashShift::where('business_id',$order->business_id)->where('branch_id',$order->branch_id)->where('status','open')->with('cashier')->get()
+   : collect();
+  return view('orders.show',compact('order','cashShifts'));
  }
  public function updateStatus(Request $request,int $order) {
   $data=$request->validate(['status'=>['required',Rule::in(['processing','ready','picked_up'])]]);

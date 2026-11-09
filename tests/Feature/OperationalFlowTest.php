@@ -17,6 +17,7 @@ class OperationalFlowTest extends TestCase {
  }
  public function test_cash_payment_is_paid_and_cannot_be_recorded_twice():void {
   $this->actingAs($this->cashier);
+  $this->post(route('shifts.store'),['opening_cash'=>0])->assertRedirect();
   $this->post(route('payments.store',$this->order->id),['method'=>'cash'])->assertRedirect();
   $this->assertDatabaseHas('payments',['order_id'=>$this->order->id,'status'=>'paid','amount'=>24000]);
   $this->post(route('payments.store',$this->order->id),['method'=>'cash'])->assertSessionHasErrors('method');
@@ -24,6 +25,7 @@ class OperationalFlowTest extends TestCase {
  }
  public function test_pickup_requires_full_payment():void {
   $this->actingAs($this->cashier);
+  $this->post(route('shifts.store'),['opening_cash'=>0])->assertRedirect();
   $this->patch(route('orders.status',$this->order->id),['status'=>'picked_up'])->assertSessionHasErrors('status');
   $this->assertDatabaseHas('orders',['id'=>$this->order->id,'status'=>'ready']);
   $this->post(route('payments.store',$this->order->id),['method'=>'cash'])->assertRedirect();
