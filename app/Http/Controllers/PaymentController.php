@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Order;
+use App\Models\CashShift;
 use App\Models\Payment;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class PaymentController extends Controller {
  }
  public function store(Request $request,int $order) {
   $data=$request->validate([
+   'cash_shift_id'=>['nullable','integer'],
    'method'=>['required',Rule::in(['cash','transfer','qris'])],
    'reference'=>['nullable','string','max:120'],
    'notes'=>['nullable','string','max:1000'],
@@ -25,7 +27,23 @@ class PaymentController extends Controller {
    $existing=Payment::where('order_id',$order->id)->lockForUpdate()->first();
    if($existing && ($existing->status!=='rejected' || !$request->user()->isOwner())) throw ValidationException::withMessages(['method'=>'Pembayaran sudah dicatat. Muat ulang halaman.']);
    $cash=$data['method']==='cash';
+   $shift=null;
+   if($cash){
+    // Lock yang sama dengan penutupan shift: pembayaran selesai sebelum tutup,
+    // atau ditolak jika penutupan sudah lebih dahulu selesai.
+    $shifts=CashShift::where('business_id',$order->business_id)
+     ->where('branch_id',$order->branch_id)->where('status','open');
+    if($request->user()->isCashier()){
+     $shifts->where('cashier_id',$request->user()->id);
+    }else{
+     if(empty($data['cash_shift_id'])) throw ValidationException::withMessages(['method'=>'Pilih shift kasir aktif untuk pembayaran tunai.']);
+     $shifts->whereKey($data['cash_shift_id']);
+    }
+    $shift=$shifts->lockForUpdate()->first();
+    if(!$shift) throw ValidationException::withMessages(['method'=>'Pembayaran tunai memerlukan shift aktif pada cabang pesanan. Buka shift terlebih dahulu.']);
+   }
    $payload=[
+    'cash_shift_id'=>$shift?->id,
     'order_id'=>$order->id,'recorded_by'=>$request->user()->id,
     'confirmed_by'=>$cash?$request->user()->id:null,
     'method'=>$data['method'],'status'=>$cash?'paid':'pending',
@@ -34,7 +52,7 @@ class PaymentController extends Controller {
    ];
    if($existing) $existing->update($payload);
    else Payment::create($payload);
-   AuditLog::create(['business_id'=>$order->business_id,'user_id'=>$request->user()->id,'action'=>'payment.recorded','subject_type'=>'payment','subject_id'=>$existing?->id??Payment::where('order_id',$order->id)->value('id'),'details'=>['order_id'=>$order->id,'method'=>$data['method'],'amount'=>$order->total,'status'=>$payload['status']]]);
+   AuditLog::create(['business_id'=>$order->business_id,'user_id'=>$request->user()->id,'action'=>'payment.recorded','subject_type'=>'payment','subject_id'=>$existing?->id??Payment::where('order_id',$order->id)->value('id'),'details'=>['order_id'=>$order->id,'method'=>$data['method'],'amount'=>$order->total,'status'=>$payload['status'],'cash_shift_id'=>$shift?->id]]);
   });
   return redirect()->route('orders.show',$order)->with('success','Pembayaran berhasil dicatat.');
  }

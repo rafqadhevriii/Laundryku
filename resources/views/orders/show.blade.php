@@ -29,6 +29,14 @@
 @if($payment?->status==='rejected')<p class="error">Pembayaran sebelumnya ditolak. Pemilik dapat mencatat ulang.</p>@endif
 <form method="POST" action="{{ route('payments.store',$order->id) }}">@csrf
 <label for="method">Metode pembayaran</label><select id="method" name="method" required><option value="cash">Tunai (langsung lunas)</option><option value="transfer">Transfer (perlu konfirmasi pemilik)</option><option value="qris">QRIS manual (perlu konfirmasi pemilik)</option></select>
+@if(auth()->user()->isOwner())
+<label for="cash_shift_id">Shift penerima tunai (wajib untuk tunai)</label>
+<select id="cash_shift_id" name="cash_shift_id"><option value="">Pilih shift aktif pada cabang ini</option>
+@foreach($cashShifts as $shift)<option value="{{ $shift->id }}" @selected(old('cash_shift_id') == $shift->id)>{{ $shift->cashier?->name }} — {{ $shift->opened_at->format('d/m/Y H:i') }}</option>@endforeach</select>
+@error('cash_shift_id')<p class="error">{{ $message }}</p>@enderror
+@else
+<p class="muted">Pembayaran tunai dicatat ke shift aktif Anda. Buka shift sebelum menerima tunai.</p>
+@endif
 <label for="reference">Referensi transaksi (opsional)</label><input id="reference" name="reference" maxlength="120">
 <label for="notes">Catatan (opsional)</label><input id="notes" name="notes" maxlength="1000">
 @error('method')<p class="error">{{ $message }}</p>@enderror
