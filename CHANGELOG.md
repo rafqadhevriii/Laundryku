@@ -1,5 +1,10 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-09 (audit lanjutan)
+- Menjalankan tes otomatis: 20 lulus, 105 assertions.
+- Menambahkan AUDIT_PAYMENT_SHIFT.md untuk mencatat risiko shift tumpang tindih dan pengajuan ulang pembayaran digital.
+- Belum ada perubahan kode bisnis.
+
 ## 2026-11-09 (lanjutan)
 - Menambahkan BLACKBOX_TEST_PLAN.md berisi 25 skenario pengujian manual dan format pencatatan hasil untuk TA.
 - Memperbarui PROGRESS.md; pengujian manual belum dilakukan.

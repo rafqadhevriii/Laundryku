@@ -18,7 +18,8 @@ Diperbarui: 2026-11-09. Catatan awal untuk koordinasi ChatGPT dan Codex.
 
 ## Prioritas berikutnya
 - Rencana Black Box sudah disusun dalam BLACKBOX_TEST_PLAN.md (25 skenario). Pengujian manual dan bukti belum dilakukan.
-- Pemeriksaan edge case shift kasir, stok, pembayaran, dan pembatasan akses.
+- Audit awal pembayaran dan shift didokumentasikan di AUDIT_PAYMENT_SHIFT.md. Perlu perbaikan pengaitan pembayaran tunai ke shift dan keputusan pengajuan ulang pembayaran digital ditolak.
+- Perluasan pengujian akses lintas cabang dan pengguna tidak aktif.
 - Penyempurnaan UI/UX dan validasi alur kerja bersama pengguna laundry.
 
 ## Sinkronisasi
