@@ -24,23 +24,23 @@
 <p class="muted">Harga mengikuti tarif saat pesanan dibuat.</p></div></div>
 <div class="card" style="margin-top:20px"><h2>Pembayaran</h2>
 @php($payment=$order->payment)
-@if(!$payment || ($payment->status==='rejected' && auth()->user()->isOwner()))
+@if(!$payment || $payment->status==='rejected')
 <p class="muted">Total yang harus dibayar: Rp {{ number_format($order->total,0,',','.') }}. Pembayaran harus lunas sekaligus.</p>
-@if($payment?->status==='rejected')<p class="error">Pembayaran sebelumnya ditolak. Pemilik dapat mencatat ulang.</p>@endif
-<form method="POST" action="{{ route('payments.store',$order->id) }}">@csrf
-<label for="method">Metode pembayaran</label><select id="method" name="method" required><option value="cash">Tunai (langsung lunas)</option><option value="transfer">Transfer (perlu konfirmasi pemilik)</option><option value="qris">QRIS manual (perlu konfirmasi pemilik)</option></select>
-@if(auth()->user()->isOwner())
+@if($payment?->status==='rejected')<p class="error">Pembayaran sebelumnya ditolak: {{ $payment->notes }}. Ajukan ulang transfer/QRIS untuk konfirmasi Pemilik.</p>@endif
+<form method="POST" action="{{ route($payment?'payments.retry':'payments.store',$order->id) }}">@csrf
+<label for="method">Metode pembayaran</label><select id="method" name="method" required>@if(!$payment)<option value="cash">Tunai (langsung lunas)</option>@endif<option value="transfer">Transfer (perlu konfirmasi pemilik)</option><option value="qris">QRIS manual (perlu konfirmasi pemilik)</option></select>
+@if(!$payment && auth()->user()->isOwner())
 <label for="cash_shift_id">Shift penerima tunai (wajib untuk tunai)</label>
 <select id="cash_shift_id" name="cash_shift_id"><option value="">Pilih shift aktif pada cabang ini</option>
 @foreach($cashShifts as $shift)<option value="{{ $shift->id }}" @selected(old('cash_shift_id') == $shift->id)>{{ $shift->cashier?->name }} — {{ $shift->opened_at->format('d/m/Y H:i') }}</option>@endforeach</select>
 @error('cash_shift_id')<p class="error">{{ $message }}</p>@enderror
-@else
+@elseif(!$payment)
 <p class="muted">Pembayaran tunai dicatat ke shift aktif Anda. Buka shift sebelum menerima tunai.</p>
 @endif
 <label for="reference">Referensi transaksi (opsional)</label><input id="reference" name="reference" maxlength="120">
 <label for="notes">Catatan (opsional)</label><input id="notes" name="notes" maxlength="1000">
 @error('method')<p class="error">{{ $message }}</p>@enderror
-<button style="margin-top:15px">Catat Pembayaran</button></form>
+<button style="margin-top:15px">{{ $payment?'Ajukan Ulang Pembayaran Digital':'Catat Pembayaran' }}</button></form>
 @else
 <p>Metode: {{ ['cash'=>'Tunai','transfer'=>'Transfer','qris'=>'QRIS'][$payment->method]??$payment->method }}</p>
 <p>Jumlah: Rp {{ number_format($payment->amount,0,',','.') }}</p>
@@ -55,6 +55,11 @@
 @endif
 @endif
 @error('payment')<p class="error">{{ $message }}</p>@enderror
+@if($payment && $payment->attempts->isNotEmpty())
+<h3>Riwayat percobaan pembayaran</h3><div style="overflow:auto"><table><thead><tr><th>Percobaan / Waktu</th><th>Metode / Referensi</th><th>Jumlah</th><th>Status / Keputusan</th><th>Pencatat / Peninjau</th></tr></thead><tbody>
+@foreach($payment->attempts as $attempt)<tr><td>#{{ $attempt->attempt_number }} — {{ $attempt->submitted_at?->format('d/m/Y H:i') }}</td><td>{{ strtoupper($attempt->method) }} / {{ $attempt->reference??'-' }}<br>{{ $attempt->notes }}</td><td>Rp {{ number_format($attempt->amount,0,',','.') }}</td><td>{{ ['pending'=>'Menunggu konfirmasi','paid'=>'Lunas','rejected'=>'Ditolak'][$attempt->status]??$attempt->status }}<br>{{ $attempt->rejection_reason }}<br>{{ $attempt->decided_at?->format('d/m/Y H:i') }}</td><td>{{ $attempt->recorder?->name }} / {{ $attempt->confirmer?->name??'-' }}</td></tr>@endforeach
+</tbody></table></div>
+@endif
 </div>
 <p style="margin-top:20px"><a href="{{ route('orders.index') }}">Kembali ke daftar pesanan</a></p>
 @endsection

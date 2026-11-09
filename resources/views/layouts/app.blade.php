@@ -26,6 +26,7 @@ table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:12px;bor
 @if(auth()->user()->isOwner())
 <a class="nav {{ request()->routeIs('owner.reports.*')?'active':'' }}" href="{{ route('owner.reports.index') }}">Laporan Pendapatan</a>
 <a class="nav {{ request()->routeIs('owner.operational.*')?'active':'' }}" href="{{ route('owner.operational.index') }}">Laporan Operasional</a>
+<a class="nav {{ request()->routeIs('owner.reconciliation.*')?'active':'' }}" href="{{ route('owner.reconciliation.index') }}">Rekonsiliasi Tunai</a>
 <a class="nav {{ request()->routeIs('owner.audit.*')?'active':'' }}" href="{{ route('owner.audit.index') }}">Riwayat Aktivitas</a>
 <a class="nav {{ request()->routeIs('owner.services.*')?'active':'' }}" href="{{ route('owner.services.index') }}">Layanan dan Harga</a>
 <a class="nav {{ request()->routeIs('owner.cashiers.*')?'active':'' }}" href="{{ route('owner.cashiers.index') }}">Akun Kasir</a>

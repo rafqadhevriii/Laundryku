@@ -32,3 +32,11 @@ Tambahkan tes pengajuan ulang, penolakan berulang, dan pencegahan pembayaran gan
 
 ## Arahan untuk Codex
 Baca AGENTS.md dan dokumen ini. Kerjakan perbaikan secara bertahap dalam branch terpisah dan ajukan pull request. Jangan mengubah database utama. Jalankan seluruh tes pada laundryku_testing dan perbarui PROGRESS.md serta CHANGELOG.md.
+
+## Pembaruan implementasi 2026-11-09
+Temuan di atas adalah catatan audit awal, bukan status terbaru. Pengaitan pembayaran tunai ke ID shift sudah tersedia pada main sebelum pekerjaan ini. Branch `feat/reconciliation-payment-retry` menambahkan halaman rekonsiliasi Pemilik dan retry digital sesuai SPEC_RECONCILIATION_RETRY.md.
+
+- Historis hanya dapat dihubungkan secara eksplisit ke shift terbuka yang sesuai usaha/cabang/periode, dengan alasan wajib. Final submitted/reviewed tidak diubah. Pengecualian historis menyimpan alasan dan menghapus blokir penutupan tanpa menambah kas shift; belum ditinjau tetap memblokir.
+- Retry oleh Kasir terbatas cabang/usaha, hanya transfer/QRIS, kembali pending, dan wajib dikonfirmasi ulang Pemilik. Riwayat percobaan serta alasan penolakan tetap tersimpan. Pending/paid tidak dapat diajukan ulang; satu pembayaran per pesanan tetap dipertahankan.
+- Audit keputusan rekonsiliasi berisi aktor, waktu, alasan, sebelum/sesudah, dan tujuan. Audit retry/konfirmasi/penolakan menyertakan ID percobaan.
+- Verifikasi: 46 tes lulus/401 assertions pada laundryku_testing, kompilasi Blade berhasil, dan uji browser otomatis berhasil. Detail serta keterbatasan ada di PROGRESS.md dan BLACKBOX_TEST_PLAN.md. Belum diuji konkurensi multiproses; tidak ada perubahan database utama.
