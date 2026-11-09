@@ -1,0 +1,64 @@
+<?php
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CashierController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SetupController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CashShiftController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\OperationalReportController;
+use App\Http\Controllers\OperationalExportController;
+use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\AuditLogController;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+Route::get('/',fn()=>redirect()->route(auth()->check()?'dashboard':(User::exists()?'login':'setup.create')));
+Route::middleware('guest')->group(function(){
+ Route::get('/setup',[SetupController::class,'create'])->name('setup.create');
+ Route::post('/setup',[SetupController::class,'store'])->name('setup.store');
+ Route::get('/login',[AuthController::class,'showLogin'])->name('login');
+ Route::post('/login',[AuthController::class,'login'])->name('login.store');
+});
+Route::middleware('auth')->group(function(){
+ Route::post('/logout',[AuthController::class,'logout'])->name('logout');
+ Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/shifts',[CashShiftController::class,'index'])->name('shifts.index');
+ Route::post('/shifts',[CashShiftController::class,'store'])->name('shifts.store');
+ Route::patch('/shifts/{shift}/close',[CashShiftController::class,'close'])->name('shifts.close');
+ Route::patch('/shifts/{shift}/review',[CashShiftController::class,'review'])->middleware('role:owner')->name('shifts.review');
+ Route::get('/inventory',[InventoryController::class,'index'])->name('inventory.index');
+ Route::post('/inventory',[InventoryController::class,'store'])->middleware('role:owner')->name('inventory.store');
+ Route::post('/inventory/{item}/movements',[InventoryController::class,'move'])->name('inventory.move');
+ Route::patch('/inventory/movements/{movement}/review',[InventoryController::class,'review'])->middleware('role:owner')->name('inventory.review');
+ Route::get('/expenses',[ExpenseController::class,'index'])->name('expenses.index');
+ Route::post('/expenses',[ExpenseController::class,'store'])->name('expenses.store');
+ Route::resource('customers',CustomerController::class)->except(['show','destroy']);
+ Route::get('/orders',[OrderController::class,'index'])->name('orders.index');
+ Route::get('/orders/create',[OrderController::class,'create'])->name('orders.create');
+ Route::post('/orders',[OrderController::class,'store'])->name('orders.store');
+ Route::get('/orders/{order}',[OrderController::class,'show'])->name('orders.show');
+ Route::get('/orders/{order}/receipt',[ReceiptController::class,'show'])->name('orders.receipt');
+ Route::patch('/orders/{order}/status',[OrderController::class,'updateStatus'])->name('orders.status');
+ Route::post('/orders/{order}/payment',[PaymentController::class,'store'])->name('payments.store');
+ Route::middleware('role:owner')->group(function(){
+  Route::patch('/orders/{order}/payment/confirm',[PaymentController::class,'confirm'])->name('payments.confirm');
+  Route::patch('/orders/{order}/payment/reject',[PaymentController::class,'reject'])->name('payments.reject');
+ });
+ Route::middleware('role:owner')->prefix('owner')->name('owner.')->group(function(){
+  Route::get('/audit-logs',[AuditLogController::class,'index'])->name('audit.index');
+  Route::get('/reports',[ReportController::class,'index'])->name('reports.index');
+  Route::get('/operational-reports',[OperationalReportController::class,'index'])->name('operational.index');
+  Route::get('/operational-reports/excel',[OperationalExportController::class,'excel'])->name('operational.excel');
+  Route::get('/reports/export',[ReportController::class,'export'])->name('reports.export');
+  Route::get('/reports/pdf',[ReportController::class,'pdf'])->name('reports.pdf');
+  Route::get('/reports/excel',[ReportController::class,'excel'])->name('reports.excel');
+  Route::resource('services',ServiceController::class)->except(['show','destroy']);
+  Route::get('/cashiers',[CashierController::class,'index'])->name('cashiers.index');
+  Route::post('/cashiers',[CashierController::class,'store'])->name('cashiers.store');
+ });
+});
