@@ -9,6 +9,9 @@
 - Keterbatasan: belum diuji browser/printer atau konkurensi multiproses; data historis ambigu tidak dipasangkan otomatis. Pengeluaran belum diikat ke kas shift; keputusan pengajuan ulang digital oleh Kasir tidak diubah.
 - Berikutnya: review PR, uji manual dua kasir/cabang dan skenario penerapan; tutup/review shift lama pada masa pemeliharaan sebelum migrasi. Detail penerapan dan rekonsiliasi ada di PROGRESS.md.
 
+## 2026-11-09 (spesifikasi lanjutan)
+- Menyusun SPEC_RECONCILIATION_RETRY.md untuk pekerjaan Codex berikutnya. Belum ada perubahan logika aplikasi.
+
 ## 2026-11-09 (audit lanjutan)
 - Menjalankan tes otomatis: 20 lulus, 105 assertions.
 - Menambahkan AUDIT_PAYMENT_SHIFT.md untuk mencatat risiko shift tumpang tindih dan pengajuan ulang pembayaran digital.

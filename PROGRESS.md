@@ -35,6 +35,7 @@ Diperbarui: 2026-11-09. Perbaikan pengaitan pembayaran tunai ke shift.
 - File terkait: PaymentController, CashShiftController, OrderController, model Payment/CashShift, view orders/show, migrasi `2026_11_09_150000_add_cash_shift_id_to_payments_table.php`, CashPaymentShiftTest, dan OperationalFlowTest.
 
 ## Prioritas berikutnya
+- Spesifikasi rekonsiliasi pembayaran historis dan pengajuan ulang digital disiapkan dalam SPEC_RECONCILIATION_RETRY.md; implementasi belum dilakukan.
 - Rencana Black Box sudah disusun dalam BLACKBOX_TEST_PLAN.md (25 skenario). Pengujian manual dan bukti belum dilakukan.
 - Audit awal pembayaran dan shift didokumentasikan di AUDIT_PAYMENT_SHIFT.md. Pengaitan pembayaran tunai ke shift sudah diperbaiki pada branch ini; keputusan perluasan hak Kasir untuk pengajuan ulang pembayaran digital ditolak tetap belum diubah.
 - Perluasan pengujian akses lintas cabang dan pengguna tidak aktif.
