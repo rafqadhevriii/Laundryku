@@ -1,0 +1,260 @@
+{
+  "accessibility": [
+    {
+      "page": "login",
+      "violations": []
+    },
+    {
+      "page": "dashboard-owner",
+      "violations": []
+    },
+    {
+      "page": "mobile-dialog",
+      "violations": []
+    }
+  ],
+  "overflow": [
+    {
+      "width": 375,
+      "url": "/dashboard",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/orders",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/orders/create",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/customers",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/shifts",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/inventory",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/expenses",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/reports",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/operational-reports",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/payment-reconciliation",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/services",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/cashiers",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 375,
+      "url": "/owner/audit-logs",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "width": 768,
+      "url": "/dashboard",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/orders",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/orders/create",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/customers",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/shifts",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/inventory",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/expenses",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/reports",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/operational-reports",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/payment-reconciliation",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/services",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/cashiers",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "url": "/owner/audit-logs",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 1280,
+      "url": "/dashboard",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/orders",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/orders/create",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/customers",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/shifts",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/inventory",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/expenses",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/reports",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/operational-reports",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/payment-reconciliation",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/services",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/cashiers",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 1280,
+      "url": "/owner/audit-logs",
+      "client": 1280,
+      "scroll": 1280
+    }
+  ],
+  "checks": [
+    "Login native + password visibility toggle",
+    "Drawer keyboard Enter, focus trapped, Escape, focus restored, aria-expanded",
+    "Drawer backdrop dismiss",
+    "Reduced motion overrides animation duration",
+    "Mobile navigation works without JavaScript"
+  ],
+  "errors": []
+}

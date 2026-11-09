@@ -1,5 +1,16 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-09 (UI/UX Tahap A)
+- Menambahkan identitas SVG orisinal Laundryku (logo terang/gelap, mark, favicon) dan set ikon inline orisinal, tanpa CDN/font/aset pihak ketiga untuk fungsi inti.
+- Memindahkan CSS layout ke tokens navy/teal/putih dan tipografi lokal melalui Vite. Menambahkan package-lock.json untuk npm ci; aset produksi dihasilkan pada public/build sesuai .gitignore.
+- Membangun komponen Blade head/brand/icon/button/alert/field/nav-item/sidebar/topbar serta layout guest. Sidebar berkelompok per peran, indikator aktif aksesibel, konteks usaha/cabang, dan logout menggunakan route/CSRF yang sama.
+- Sidebar mobile mendukung keyboard, focus trap, Escape/backdrop/tombol tutup, fokus kembali, aria-expanded, dan fallback tanpa JS. Transisi 160ms mendukung reduced motion.
+- Menata ulang login/setup dengan label/error terasosiasi, old input nonrahasia, bantuan kontekstual, toggle password dan feedback submit. Menambahkan area scroll tabel berlabel serta pembungkusan tombol filter tanpa mengubah isi atau aksinya.
+- File terkait: public/brand dan favicon.svg, resources/css/app.css, resources/js/app.js, components Blade, layouts app/guest, auth login/setup, package-lock.json, UiShellTest, PROGRESS.md dan docs/uiux/stage-a (laporan/34 screenshot/hasil browser).
+- Hasil sebenarnya: npm run build berhasil; php artisan test **51 lulus / 456 assertions** pada laundryku_testing; view:cache dan diff --check berhasil. Playwright/Chromium memverifikasi drawer, keyboard, reduced motion, no-JS dan validasi. Tidak ada overflow root pada 39 kombinasi URL/lebar. axe tidak menemukan pelanggaran pada layar Tahap A yang diperiksa; detail dan batas cakupan pada laporan desain.
+- Controller, route, validasi server, hak akses, kalkulasi, schema/migration, seeder, dan nota standalone tidak diubah. Database utama tidak diakses/diubah; fixture screenshot hanya di database pengujian.
+- Belum melakukan uji manual pengguna/pembaca layar/perangkat lain/printer fisik. Tahap B/C dan audit aksesibilitas menyeluruh tetap pekerjaan berikutnya. PR terpisah, jangan merge otomatis.
+
 ## 2026-11-09 (rekonsiliasi historis dan retry digital)
 - Menambahkan halaman khusus Pemilik untuk pembayaran tunai historis: filter cabang/tanggal/nomor, pengaitan eksplisit ke shift terbuka yang sesuai, pengecualian belum teralokasi dengan alasan wajib, ringkasan, dan laporan keputusan.
 - Setiap keputusan direkam dengan aktor/waktu/alasan/status sebelum-sesudah/shift tujuan. Pengaitan ganda dan pengaitan ke shift final ditolak; saldo final tidak dihitung ulang. Pengecualian ditinjau tidak lagi memblokir penutupan dan tetap tidak masuk kas shift. Pendapatan tetap menghitung pembayaran lunas sekali.
