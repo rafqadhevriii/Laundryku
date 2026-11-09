@@ -1,0 +1,380 @@
+{
+  "accessibility": [
+    {
+      "name": "dashboard-owner",
+      "violations": []
+    },
+    {
+      "name": "orders-filled",
+      "violations": []
+    },
+    {
+      "name": "orders-empty",
+      "violations": []
+    },
+    {
+      "name": "create-owner",
+      "violations": []
+    },
+    {
+      "name": "detail-rejected-owner",
+      "violations": []
+    },
+    {
+      "name": "shifts-owner",
+      "violations": []
+    },
+    {
+      "name": "dashboard-cashier-mobile",
+      "violations": []
+    },
+    {
+      "name": "orders-mobile",
+      "violations": []
+    },
+    {
+      "name": "create-cashier-mobile",
+      "violations": []
+    },
+    {
+      "name": "detail-rejected-cashier",
+      "violations": []
+    },
+    {
+      "name": "shifts-open-mobile",
+      "violations": []
+    },
+    {
+      "name": "create-invalid-mobile",
+      "violations": []
+    },
+    {
+      "name": "cash-payment-confirmation",
+      "violations": []
+    },
+    {
+      "name": "detail-paid-picked-up",
+      "violations": []
+    },
+    {
+      "name": "detail-pending-cashier",
+      "violations": []
+    },
+    {
+      "name": "detail-pending-owner",
+      "violations": []
+    },
+    {
+      "name": "detail-retry-paid-owner",
+      "violations": []
+    },
+    {
+      "name": "shift-submitted-cashier",
+      "violations": []
+    },
+    {
+      "name": "shift-reviewed-owner",
+      "violations": []
+    },
+    {
+      "name": "pagination-page-2-375",
+      "violations": []
+    },
+    {
+      "name": "pagination-page-2-1280",
+      "violations": []
+    }
+  ],
+  "overflow": [
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/dashboard",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/orders",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/orders/create",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/orders/80",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "path": "/shifts",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/dashboard",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/orders",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/orders/create",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/orders/80",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "path": "/shifts",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/dashboard",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/orders",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/orders/create",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/orders/80",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "path": "/shifts",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/dashboard",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/orders",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/orders/create",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/orders/80",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/shifts",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/dashboard",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/orders",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/orders/create",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/orders/80",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/shifts",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/dashboard",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/orders",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/orders?search=TidakAdaHasilDemo",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/orders/create",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/orders/80",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/shifts",
+      "client": 1280,
+      "scroll": 1280
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "path": "/orders?search=PAGE-B&status=ready&page=2",
+      "client": 375,
+      "scroll": 375
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "path": "/orders?search=PAGE-B&status=ready&page=2",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "path": "/orders?search=PAGE-B&status=ready&page=2",
+      "client": 1280,
+      "scroll": 1280
+    }
+  ],
+  "checks": [
+    "Owner branch switch clears mismatched customer and keeps supplied scope",
+    "Search/status GET filters, scoped mobile cards and reset",
+    "Dynamic add/remove, unique nonconsecutive indices and 20-row limit",
+    "Server duplicate validation retains customer, rows, quantities and notes",
+    "Mixed kg/item saved using server total Rp 50.000,00 and longest duration",
+    "Cash confirmation: focus trap, Escape/cancel send no request, approve sends once",
+    "Order progression uses original endpoints; pickup confirmed only after paid",
+    "Receipt print CSS 58/80mm stays independent of shell",
+    "Cashier digital retry stays pending and retains old rejection/reference",
+    "Owner rejection requires reason/confirmation; second retry preserves both earlier rejections",
+    "Shift close: actual cash retained on cancel, server expected Rp 150.000,00; digital excluded",
+    "Owner shift review confirms persisted balances without recalculation",
+    "Confirmation respects prefers-reduced-motion",
+    "Direct numbered pagination preserves search/status query on 375/768/1280px, with accessible current page"
+  ],
+  "errors": []
+}

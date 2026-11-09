@@ -1,42 +1,26 @@
 @extends('layouts.app')
 @section('title','Pesanan Baru')
 @section('content')
-<div class="card" style="max-width:780px">
-@if($customers->isEmpty() || $services->isEmpty())<p class="error">Pastikan sudah ada pelanggan dan layanan aktif sebelum membuat pesanan.</p>@endif
-<form method="POST" action="{{ route('orders.store') }}">@csrf
-@if(auth()->user()->isOwner())
-<label for="branch_id">Cabang</label><select id="branch_id" name="branch_id" required><option value="">Pilih cabang</option>
-@foreach($branches as $branch)<option value="{{ $branch->id }}" @selected(old('branch_id')==$branch->id)>{{ $branch->name }}</option>@endforeach</select>
-@endif
-<label for="customer_id">Pelanggan</label><select id="customer_id" name="customer_id" required><option value="">Pilih pelanggan</option>
-@foreach($customers as $customer)<option value="{{ $customer->id }}" data-branch="{{ $customer->branch_id }}" @selected(old('customer_id')==$customer->id)>{{ $customer->name }} ({{ $customer->phone??'tanpa telepon' }})</option>@endforeach</select>
-<p class="muted" style="font-size:13px">Pelanggan harus berasal dari cabang yang sama.</p>
-<h3>Layanan pesanan</h3>
-<div id="items">
-@foreach(old('items',[['service_id'=>'','quantity'=>'1']]) as $i=>$item)
-<div class="item-row" style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px">
-<div><label>Layanan</label><select name="items[{{ $i }}][service_id]" required><option value="">Pilih layanan</option>
-@foreach($services as $service)<option value="{{ $service->id }}" @selected(($item['service_id']??'')==$service->id)>{{ $service->name }} | Rp {{ number_format($service->price,0,',','.') }}/{{ $service->unit }}</option>@endforeach</select></div>
-<div><label>Berat / jumlah</label><input name="items[{{ $i }}][quantity]" type="number" min="0.01" step="0.01" required value="{{ $item['quantity']??1 }}"></div>
-<button type="button" class="remove-item" style="background:#64748b">Hapus</button></div>
-@endforeach
+<div class="operation-intro"><div><p class="intro-greeting">Catat pesanan dengan jelas.</p><p class="muted">Pilih pelanggan, layanan, lalu masukkan berat atau jumlah barang.</p></div><x-ui.button :href="route('orders.index')" variant="ghost">Kembali ke pesanan</x-ui.button></div>
+<x-ui.form-feedback/>
+@if($customers->isEmpty() || $services->isEmpty())<x-ui.alert type="error">Pastikan sudah ada pelanggan dan layanan aktif sebelum membuat pesanan. <a href="{{ route('customers.create') }}">Tambah pelanggan</a>@if(auth()->user()->isOwner()) · <a href="{{ route('owner.services.create') }}">Tambah layanan</a>@endif</x-ui.alert>@endif
+<form method="POST" action="{{ route('orders.store') }}" data-order-form>@csrf
+<div class="order-composer"><div class="composer-fields">
+<section class="card"><x-ui.section-header title="1. Pelanggan & cabang" description="Pelanggan harus berasal dari cabang yang sama."/>
+@if(auth()->user()->isOwner())<x-ui.select name="branch_id" label="Cabang" required data-order-branch><option value="">Pilih cabang</option>@foreach($branches as $branch)<option value="{{ $branch->id }}" @selected(old('branch_id')==$branch->id)>{{ $branch->name }}</option>@endforeach</x-ui.select>
+@else<p class="context-chip"><x-ui.icon name="building"/>{{ auth()->user()->branch?->name }}</p>@endif
+<x-ui.select name="customer_id" label="Pelanggan" required data-order-customer><option value="">Pilih pelanggan</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" data-branch="{{ $customer->branch_id }}" @selected(old('customer_id')==$customer->id)>{{ $customer->name }} ({{ $customer->phone??'tanpa telepon' }})</option>@endforeach</x-ui.select>
+<p class="field-hint">Belum terdaftar? <a href="{{ route('customers.create') }}">Tambah pelanggan</a> sebelum melanjutkan.</p>
+</section>
+<section class="card section-spaced"><x-ui.section-header title="2. Layanan & jumlah" description="Gunakan satu baris untuk setiap layanan berbeda. Maksimal 20 layanan."/>
+@php($oldItems=old('items',[['service_id'=>'','quantity'=>'1']]))
+<div id="items" data-order-items>@foreach(is_array($oldItems)?$oldItems:[['service_id'=>'','quantity'=>'1']] as $i=>$item)<x-orders.service-row :services="$services" :index="$i" :item="is_array($item)?$item:[]"/>@endforeach</div>
+<template data-order-template><x-orders.service-row :services="$services" index="__INDEX__"/></template>
+<x-ui.button type="button" variant="ghost" data-order-add hidden>+ Tambah Layanan</x-ui.button><p class="field-hint">Layanan per barang memakai jumlah bulat; layanan kg menerima hingga dua angka desimal.</p><p class="form-live" data-order-announcement role="status" aria-live="polite"></p><noscript><p class="field-hint">Aktifkan JavaScript lokal untuk menambah/menghapus baris dan melihat ringkasan pilihan. Baris yang tersedia tetap dapat dikirim.</p></noscript>
+<x-ui.field-error name="items"/>
+</section>
+<section class="card section-spaced"><x-ui.section-header title="3. Catatan tambahan" description="Opsional, misalnya instruksi khusus dari pelanggan."/><div class="field"><label for="notes">Catatan pesanan</label><textarea id="notes" name="notes" rows="3" maxlength="2000" @if($errors->has('notes')) aria-invalid="true" aria-describedby="notes-error" @endif>{{ old('notes') }}</textarea><x-ui.field-error name="notes"/></div></section>
 </div>
-<button type="button" id="add-item" style="background:#0f766e;margin-top:8px">Tambah Layanan</button>
-<label for="notes">Catatan pesanan</label><textarea id="notes" name="notes" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px">{{ old('notes') }}</textarea>
-@if($errors->any())<div class="error">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
-<div style="display:flex;gap:10px;margin-top:20px"><button type="submit">Simpan Pesanan</button><a class="nav" href="{{ route('orders.index') }}">Batal</a></div>
-</form></div>
-<script>
-const items=document.getElementById('items');let nextIndex=items.querySelectorAll('.item-row').length;
-document.getElementById('add-item').addEventListener('click',()=>{
- if(items.querySelectorAll('.item-row').length>=20)return;
- const row=items.querySelector('.item-row').cloneNode(true);
- row.querySelector('select').name='items['+nextIndex+'][service_id]';
- row.querySelector('input').name='items['+nextIndex+'][quantity]';
- row.querySelector('select').value='';row.querySelector('input').value='1';nextIndex++;items.append(row);
-});
-items.addEventListener('click',e=>{if(e.target.classList.contains('remove-item')&&items.querySelectorAll('.item-row').length>1)e.target.closest('.item-row').remove();});
-const branch=document.getElementById('branch_id'),customer=document.getElementById('customer_id');
-if(branch){const sync=()=>{for(const option of customer.options){if(!option.value)continue;option.hidden=option.dataset.branch!==branch.value;}if(customer.selectedOptions[0]?.hidden)customer.value='';};branch.addEventListener('change',sync);sync();}
-</script>
+<aside class="card composer-summary" aria-labelledby="summary-title"><p class="eyebrow">Periksa sebelum menyimpan</p><h2 id="summary-title">Ringkasan pesanan</h2><p data-summary-customer class="summary-customer">Pilih pelanggan untuk pesanan ini.</p><ul class="summary-lines" data-summary-lines><li>Tarif tersedia pada pilihan layanan di samping.</li></ul><div class="summary-estimate"><x-ui.icon name="clock"/><p data-summary-duration>Estimasi mengikuti durasi layanan yang dipilih.</p></div><div class="summary-total-note"><strong>Total resmi setelah disimpan</strong><p>Total dihitung dari jumlah × tarif setiap layanan setelah pesanan disimpan. Harga mengikuti tarif saat pemesanan; estimasi selesai mengikuti layanan terlama.</p></div><x-ui.button class="full-width" icon="check">Simpan Pesanan</x-ui.button><x-ui.button :href="route('orders.index')" variant="ghost" class="full-width">Batal</x-ui.button></aside>
+</div></form>
 @endsection

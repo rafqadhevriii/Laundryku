@@ -1,40 +1,52 @@
 @extends('layouts.app')
 @section('title','Dashboard '.($user->isOwner()?'Pemilik':'Kasir'))
 @section('content')
-<style>
-.dashboard-intro{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-.dashboard-intro p{margin:0}.dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
-.dashboard-actions .btn{padding:10px 14px}
-.metric-card{position:relative;min-height:112px}.metric-card p{margin:0 0 13px;font-size:13px}.metric-card h2{font-size:25px;line-height:1.2;margin:0;overflow-wrap:anywhere}
-.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-heading h2{font-size:18px;margin:0}
-.dashboard-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr));gap:18px;margin-top:22px}
-.dashboard-panel{min-width:0}.dashboard-panel table{font-size:13px}.dashboard-panel th,.dashboard-panel td{padding:10px 7px}.dashboard-panel .muted{font-size:12px}
-.tag{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
-.tag-red{background:#fef2f2;color:#b91c1c}.tag-amber{background:#fffbeb;color:#92400e}.tag-green{background:#ecfdf5;color:#047857}.tag-blue{background:#eff6ff;color:#1d4ed8}
-.table-wrap{overflow-x:auto}.table-wrap table{min-width:440px}.empty-state{padding:20px 0;color:#64748b;font-size:13px}
-</style>
-<div class="dashboard-intro"><p class="muted">Selamat datang, {{ $user->name }}. {{ $user->isOwner()?'Ringkasan operasional seluruh cabang.':'Cabang: '.($user->branch?->name??'-') }}</p>
-<div class="dashboard-actions"><a class="btn" href="{{ route('orders.create') }}">+ Pesanan baru</a>@if($user->isOwner())<a class="btn" style="background:#e8efff;color:#1d4ed8" href="{{ route('owner.reports.index') }}">Lihat laporan</a>@endif</div></div>
-<div class="grid">
-@foreach($stats as $stat)<div class="card metric-card"><p class="muted">{{ $stat['label'] }}</p><h2>{{ $stat['value'] }}</h2></div>@endforeach
+@php
+$scope=$user->isOwner()?'Seluruh cabang':($user->branch?->name??'Cabang Anda');
+$primary=['Pesanan hari ini','Siap diambil','Belum lunas','Pembayaran diterima hari ini'];
+$meta=[
+ 'Pesanan hari ini'=>['bag','info','Dibuat hari ini','orders.index','Lihat pesanan'],
+ 'Siap diambil'=>['check','success','Status saat ini','orders.index','Tinjau pesanan'],
+ 'Belum lunas'=>['wallet','warning','Pesanan selain yang dibatalkan','orders.index','Tinjau pembayaran'],
+ 'Pembayaran diterima hari ini'=>['chart','success','Lunas / terkonfirmasi hari ini',$user->isOwner()?'owner.reports.index':'orders.index',$user->isOwner()?'Lihat laporan':'Lihat pesanan'],
+ 'Cabang aktif'=>['building','neutral','Usaha Anda · saat ini',null,null],
+ 'Sedang diproses'=>['shirt','info','Status saat ini',null,null],
+ 'Pesanan terlambat'=>['clock','danger','Belum siap dan melewati estimasi',null,null],
+ 'Stok menipis'=>['box','warning','Di bawah / sama dengan minimum',null,null],
+ 'Pengeluaran hari ini'=>['wallet','neutral','Pengeluaran tercatat hari ini',null,null],
+ 'Shift berjalan'=>['clock','info','Shift aktif akun Anda',null,null],
+];
+@endphp
+<div class="operation-intro"><div><p class="intro-greeting">Selamat datang, {{ $user->name }}.</p><p class="muted">{{ $scope }} · Ringkasan operasional {{ now()->translatedFormat('d/m/Y') }}</p></div><div class="action-group"><x-ui.button :href="route('orders.create')" icon="bag">Pesanan baru</x-ui.button>@if($user->isOwner())<x-ui.button :href="route('owner.reports.index')" variant="ghost" icon="chart">Lihat laporan</x-ui.button>@else<x-ui.button :href="route('shifts.index')" variant="ghost" icon="clock">Kelola shift</x-ui.button>@endif</div></div>
+<div class="kpi-grid">
+@foreach($stats as $stat)@if(in_array($stat['label'],$primary))
+@php([$icon,$tone,$context,$target,$action]=$meta[$stat['label']])
+<x-ui.kpi :label="$stat['label']" :value="$stat['value']" :context="$scope.' · '.$context" :icon="$icon" :tone="$tone" :href="$target?route($target):null" :action="$action"/>
+@endif
+@endforeach
 </div>
-<div class="dashboard-panels">
-<section class="card dashboard-panel"><div class="section-heading"><h2>Pesanan terlambat</h2><span class="tag tag-red">{{ $overdue->count() }} ditampilkan</span></div>
-@if($overdue->isEmpty())<p class="empty-state">Tidak ada pesanan terlambat.</p>@else<div class="table-wrap"><table><thead><tr><th>Pesanan</th><th>Pelanggan</th><th>Estimasi</th><th>Aksi</th></tr></thead><tbody>
-@foreach($overdue as $order)<tr><td>{{ $order->order_number }}@if($user->isOwner())<div class="muted">{{ $order->branch?->name }}</div>@endif</td><td>{{ $order->customer?->name }}</td><td>{{ $order->estimated_at?->format('d/m H:i') }}</td><td><a href="{{ route('orders.show',$order) }}">Buka</a></td></tr>@endforeach
-</tbody></table></div>@endif</section>
-<section class="card dashboard-panel"><div class="section-heading"><h2>Siap diambil</h2><span class="tag tag-green">{{ $ready->count() }} ditampilkan</span></div>
-@if($ready->isEmpty())<p class="empty-state">Belum ada cucian yang siap diambil.</p>@else<div class="table-wrap"><table><thead><tr><th>Pesanan</th><th>Pelanggan</th><th>Cabang</th><th>Aksi</th></tr></thead><tbody>
-@foreach($ready as $order)<tr><td>{{ $order->order_number }}</td><td>{{ $order->customer?->name }}</td><td>{{ $order->branch?->name }}</td><td><a href="{{ route('orders.show',$order) }}">Buka</a></td></tr>@endforeach
-</tbody></table></div>@endif</section>
-<section class="card dashboard-panel"><div class="section-heading"><h2>Stok menipis</h2><span class="tag tag-amber">{{ $lowStock->count() }} ditampilkan</span></div>
-@if($lowStock->isEmpty())<p class="empty-state">Stok masih di atas batas minimum.</p>@else<div class="table-wrap"><table><thead><tr><th>Bahan</th><th>Cabang</th><th>Stok</th></tr></thead><tbody>
-@foreach($lowStock as $item)<tr><td>{{ $item->name }}</td><td>{{ $item->branch?->name }}</td><td><span class="tag tag-amber">{{ number_format($item->quantity,2,',','.') }} {{ $item->unit }}</span></td></tr>@endforeach
-</tbody></table></div>@endif<p style="margin-top:14px"><a href="{{ route('inventory.index') }}">Kelola stok bahan</a></p></section>
+<div class="kpi-grid kpi-grid-secondary">
+@foreach($stats as $stat)@if(!in_array($stat['label'],$primary))
+@php([$icon,$tone,$context]=$meta[$stat['label']]??['grid','neutral','Status saat ini'])
+<x-ui.kpi :label="$stat['label']" :value="$stat['value']" :context="$context" :icon="$icon" :tone="$tone"/>
+@endif
+@endforeach
 </div>
-<section class="card" style="margin-top:22px"><div class="section-heading"><h2>Pesanan terbaru</h2><a href="{{ route('orders.index') }}">Lihat semua</a></div>
-<div class="table-wrap"><table><thead><tr><th>Nomor</th><th>Pelanggan</th><th>Status</th><th>Total</th><th>Detail</th></tr></thead><tbody>
-@forelse($recent as $order)<tr><td>{{ $order->order_number }}</td><td>{{ $order->customer?->name }}</td><td>@php($status=['received'=>['Diterima','tag-blue'],'processing'=>['Diproses','tag-amber'],'ready'=>['Siap diambil','tag-green'],'picked_up'=>['Sudah diambil','tag-blue'],'cancelled'=>['Dibatalkan','tag-red']][$order->status]??[$order->status,'tag-blue'])<span class="tag {{ $status[1] }}">{{ $status[0] }}</span></td><td>Rp {{ number_format($order->total,0,',','.') }}</td><td><a href="{{ route('orders.show',$order) }}">Buka</a></td></tr>
-@empty<tr><td colspan="5">Belum ada pesanan.</td></tr>@endforelse
-</tbody></table></div></section>
+<div class="attention-grid">
+<section class="card attention-panel"><x-ui.section-header title="Pesanan terlambat" description="Prioritaskan pekerjaan yang melewati estimasi."><x-slot:actions><span class="status-badge status-danger">{{ $overdue->count() }} ditampilkan</span></x-slot:actions></x-ui.section-header>
+@if($overdue->isEmpty())<x-ui.empty-state title="Tidak ada pesanan terlambat." description="Pesanan yang melewati estimasi akan muncul di sini." icon="check"/>
+@else<ul class="attention-list">@foreach($overdue as $order)<li><div><a href="{{ route('orders.show',$order) }}">{{ $order->order_number }}</a><p>{{ $order->customer?->name }}</p><small>{{ $user->isOwner()?$order->branch?->name.' · ':'' }}Estimasi {{ $order->estimated_at?->format('d/m H:i') }}</small></div><span class="status-badge status-danger">Terlambat</span></li>@endforeach</ul>@endif</section>
+<section class="card attention-panel"><x-ui.section-header title="Siap diambil" description="Periksa pelunasan sebelum menyerahkan cucian."><x-slot:actions><span class="status-badge status-success">{{ $ready->count() }} ditampilkan</span></x-slot:actions></x-ui.section-header>
+@if($ready->isEmpty())<x-ui.empty-state title="Belum ada cucian yang siap diambil." description="Pesanan siap diambil akan muncul di sini." icon="bag"/>
+@else<ul class="attention-list">@foreach($ready as $order)<li><div><a href="{{ route('orders.show',$order) }}">{{ $order->order_number }}</a><p>{{ $order->customer?->name }}</p><small>{{ $order->branch?->name }}</small></div><x-ui.status-badge :status="$order->status"/></li>@endforeach</ul>@endif</section>
+<section class="card attention-panel"><x-ui.section-header title="Stok menipis" description="Bahan yang perlu diperiksa untuk operasional."><x-slot:actions><span class="status-badge status-warning">{{ $lowStock->count() }} ditampilkan</span></x-slot:actions></x-ui.section-header>
+@if($lowStock->isEmpty())<x-ui.empty-state title="Stok masih di atas batas minimum." description="Bahan yang menipis akan muncul di sini." icon="box"/>
+@else<ul class="attention-list">@foreach($lowStock as $item)<li><div><strong>{{ $item->name }}</strong><p>{{ $item->branch?->name }}</p></div><span class="status-badge status-warning">{{ number_format($item->quantity,2,',','.') }} {{ $item->unit }}</span></li>@endforeach</ul>@endif
+<a class="section-footer-link" href="{{ route('inventory.index') }}">Kelola stok bahan<x-ui.icon name="arrow"/></a></section>
+</div>
+<section class="card section-spaced"><x-ui.section-header title="Pesanan terbaru" description="Maksimal delapan pesanan terbaru sesuai akses Anda."><x-slot:actions><x-ui.button :href="route('orders.index')" variant="ghost">Lihat semua</x-ui.button></x-slot:actions></x-ui.section-header>
+@if($recent->isEmpty())<x-ui.empty-state title="Belum ada pesanan." description="Mulai mencatat pesanan agar aktivitas laundry dapat dipantau."><x-ui.button :href="route('orders.create')">Buat pesanan pertama</x-ui.button></x-ui.empty-state>
+@else<div class="table-wrap"><table><caption class="sr-only">Pesanan terbaru {{ $scope }}</caption><thead><tr><th scope="col">Nomor pesanan</th><th scope="col">Pelanggan</th><th scope="col">Status</th><th scope="col">Total</th><th scope="col">Detail</th></tr></thead><tbody>
+@foreach($recent as $order)<tr><th scope="row" class="row-heading">{{ $order->order_number }}</th><td>{{ $order->customer?->name }}</td><td><x-ui.status-badge :status="$order->status"/></td><td class="money">Rp {{ number_format($order->total,2,',','.') }}</td><td><a href="{{ route('orders.show',$order) }}" aria-label="Buka pesanan {{ $order->order_number }}">Buka<x-ui.icon name="chevron"/></a></td></tr>@endforeach
+</tbody></table></div>@endif</section>
 @endsection

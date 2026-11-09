@@ -1,4 +1,6 @@
 import './bootstrap';
+import './order-composer';
+import './confirm-actions';
 
 document.documentElement.classList.add('js');
 

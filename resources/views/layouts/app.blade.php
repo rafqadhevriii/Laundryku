@@ -18,6 +18,7 @@
 @yield('content')
 <footer class="workspace-footer"><span>Laundryku</span><span>Operasional rapi, layanan sepenuh hati.</span></footer>
 </main></div></div>
+<x-ui.confirm-dialog/>
 @else
 <main id="main-content" class="main" tabindex="-1">@yield('content')</main>
 @endauth
