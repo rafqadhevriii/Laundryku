@@ -1,6 +1,6 @@
 # Status proyek Laundryku
 
-Diperbarui: 2026-11-09. Redesign UI/UX Tahap B.
+Diperbarui: 2026-11-09. Sistem konteks cabang aktif.
 
 ## Fitur yang sudah dikerjakan
 - Login dan hak akses Pemilik/Kasir, pemisahan usaha dan cabang.
@@ -73,3 +73,13 @@ Diperbarui: 2026-11-09. Redesign UI/UX Tahap B.
 - Codex Website bekerja melalui GitHub. Setelah perubahan Codex digabung di GitHub, tarik perubahan ke folder lokal dengan Git, lalu minta ChatGPT memeriksa file dan tes.
 - Perubahan pada folder lokal tidak otomatis muncul di Codex Website sebelum di-commit dan di-push.
 - Jangan menulis klaim 'lulus' sebelum benar-benar menjalankan pengujian.
+
+## Konteks cabang aktif
+- Branch `feat/active-branch-context` dari main `a431c9f`. Pemilik memilih Semua Cabang atau cabang aktif milik usahanya melalui header POST + CSRF; Kasir hanya melihat cabang penugasan.
+- `ActiveBranchContext` dan middleware `ResolveActiveBranch` memvalidasi akun/usaha/penugasan serta sesi setiap request. Sesi dinamespace per akun/usaha dan direset login/logout/setup. Pilihan kedaluwarsa dibersihkan: GET kembali ke gabungan dengan peringatan, POST mutasi gagal tanpa menulis. Pengalih memakai whitelist redirect GET dan membuang old input saat cabang berubah.
+- Query dashboard, pesanan/pembayaran/nota, pelanggan, stok/pengajuan koreksi, pengeluaran, shift, rekonsiliasi, laporan/ekspor mengikuti cabang sebelum pagination/agregasi. Semua Cabang mempertahankan agregat serta filter laporan historis; filter URL tidak dapat mengganti cabang aktif tertentu.
+- Form Pesanan Baru tidak lagi memiliki dropdown cabang. Backend mengabaikan branch_id kiriman dan memakai konteks sah; pelanggan wajib satu cabang. Semua Cabang meminta pemilihan header sebelum pembuatan pesanan/pelanggan/stok/pengeluaran. Update historis tidak memindahkan identitas cabang.
+- File utama: service/middleware/controller pengalih, controller operasional dan auth/setup, routes/bootstrap, komponen header/branch-required, view formulir/laporan/layout, CSS dan order-composer JS, `ActiveBranchContextTest`, `docs/branch-context`.
+- Hasil akhir: **69 tes / 671 assertion lulus**, database terisolasi `laundryku_testing`; Vite build, view:cache dan diff --check berhasil. Browser Chromium desktop 1440×1000/mobile 390×844: 10 screenshot, CSRF 419 tanpa token, navigasi/keyboard/pemisahan peran berhasil, nol error JS/overflow horizontal. Axe WCAG 2.x A/AA tidak menemukan pelanggaran pada 10 tampilan teruji.
+- Tidak mengubah migration/model/skema, tidak menjalankan migrasi manual, dan tidak mengakses database utama. Perhitungan pembayaran/shift tidak diubah; tes snapshot memastikan nilai historis tetap sama.
+- Batasan: halaman administrasi usaha (layanan/akun Kasir/audit umum) tetap lingkup usaha; bukan data operasional per cabang. Mode Semua Cabang tetap dapat menindak record historis tertentu sesuai izin Pemilik lama. Belum uji pembaca layar/perangkat fisik atau konkurensi beberapa tab; konteks berbagi dalam satu sesi browser. Berikutnya review PR dan UAT, tanpa merge otomatis.

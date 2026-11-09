@@ -9,7 +9,7 @@ class OperationalReportController extends Controller {
   $filters=$request->validate(['start'=>['nullable','date'],'end'=>['nullable','date','after_or_equal:start'],'branch_id'=>['nullable',Rule::exists('branches','id')->where('business_id',$user->business_id)]]);
   $start=$filters['start']??now()->startOfMonth()->toDateString();
   $end=$filters['end']??now()->toDateString();
-  $branch=$filters['branch_id']??null;
+  $branch=app(\App\Services\ActiveBranchContext::class)->reportBranch($request,$filters['branch_id']??null);
   $businessId=$user->business_id;
   $orders=Order::where('business_id',$businessId)->when($branch,fn($q)=>$q->where('branch_id',$branch))->whereDate('created_at','>=',$start)->whereDate('created_at','<=',$end);
   $statusCounts=(clone $orders)->selectRaw('status,COUNT(*) as total')->groupBy('status')->pluck('total','status');

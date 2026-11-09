@@ -1,5 +1,5 @@
 <div class="sidebar-brand"><a href="{{ route('dashboard') }}" aria-label="Laundryku — Dashboard"><x-ui.brand light/></a></div>
-<div class="workspace-context"><span class="workspace-icon"><x-ui.icon name="building"/></span><div><strong>{{ auth()->user()->business?->name }}</strong><span>{{ auth()->user()->isOwner()?'Semua cabang':auth()->user()->branch?->name }}</span></div></div>
+<div class="workspace-context"><span class="workspace-icon"><x-ui.icon name="building"/></span><div><strong>{{ auth()->user()->business?->name }}</strong><span>{{ $activeBranchLabel }}</span></div></div>
 <nav class="sidebar-nav" aria-label="Menu utama">
 <p class="nav-heading">Operasional</p>
 <x-layout.nav-item route="dashboard" pattern="dashboard" icon="grid">Dashboard</x-layout.nav-item>

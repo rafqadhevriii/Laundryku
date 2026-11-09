@@ -2,14 +2,14 @@
 @section('title','Dashboard '.($user->isOwner()?'Pemilik':'Kasir'))
 @section('content')
 @php
-$scope=$user->isOwner()?'Seluruh cabang':($user->branch?->name??'Cabang Anda');
+$scope=$activeBranchLabel;
 $primary=['Pesanan hari ini','Siap diambil','Belum lunas','Pembayaran diterima hari ini'];
 $meta=[
  'Pesanan hari ini'=>['bag','info','Dibuat hari ini','orders.index','Lihat pesanan'],
  'Siap diambil'=>['check','success','Status saat ini','orders.index','Tinjau pesanan'],
  'Belum lunas'=>['wallet','warning','Pesanan selain yang dibatalkan','orders.index','Tinjau pembayaran'],
  'Pembayaran diterima hari ini'=>['chart','success','Lunas / terkonfirmasi hari ini',$user->isOwner()?'owner.reports.index':'orders.index',$user->isOwner()?'Lihat laporan':'Lihat pesanan'],
- 'Cabang aktif'=>['building','neutral','Usaha Anda · saat ini',null,null],
+ 'Cabang aktif'=>['building','neutral',$activeBranchId?'Cabang terpilih · saat ini':'Usaha Anda · saat ini',null,null],
  'Sedang diproses'=>['shirt','info','Status saat ini',null,null],
  'Pesanan terlambat'=>['clock','danger','Belum siap dan melewati estimasi',null,null],
  'Stok menipis'=>['box','warning','Di bawah / sama dengan minimum',null,null],

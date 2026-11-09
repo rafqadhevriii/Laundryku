@@ -9,29 +9,26 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 class InventoryController extends Controller {
  private function scoped(Request $request){
-  $u=$request->user();
-  return InventoryItem::where('business_id',$u->business_id)->when($u->isCashier(),fn($q)=>$q->where('branch_id',$u->branch_id));
+  return app(\App\Services\ActiveBranchContext::class)->scope(InventoryItem::query(),$request);
  }
  public function index(Request $request){
   $items=$this->scoped($request)->with('branch')->orderBy('name')->paginate(20);
   $pending=InventoryMovement::where('status','pending')->whereHas('item',function($q)use($request){
-   $q->where('business_id',$request->user()->business_id);
-   if($request->user()->isCashier())$q->where('branch_id',$request->user()->branch_id);
+   app(\App\Services\ActiveBranchContext::class)->scope($q,$request);
   })->with(['item','creator'])->latest()->get();
-  $branches=$request->user()->isOwner()?$request->user()->business->branches()->where('is_active',true)->get():collect();
-  return view('inventory.index',compact('items','pending','branches'));
+  return view('inventory.index',compact('items','pending'));
  }
  public function store(Request $request){
   abort_unless($request->user()->isOwner(),403);
   $u=$request->user();
   $data=$request->validate([
-   'branch_id'=>['required',Rule::exists('branches','id')->where('business_id',$u->business_id)->where('is_active',true)],
    'name'=>['required','string','max:150'],
    'category'=>['required',Rule::in(['Deterjen','Pewangi dan pelembut','Pemutih dan bahan khusus','Kemasan dan hanger','Operasional lain'])],
    'unit'=>['required','string','max:30'],
    'minimum_quantity'=>['required','numeric','min:0','max:9999999999.99','decimal:0,2']
   ]);
-  DB::transaction(function()use($data,$u){
+  DB::transaction(function()use($data,$u,$request){
+   $data['branch_id']=app(\App\Services\ActiveBranchContext::class)->requireBranch($request,true)->id;
    $item=InventoryItem::create([...$data,'business_id'=>$u->business_id,'quantity'=>0]);
    AuditLog::create(['business_id'=>$u->business_id,'user_id'=>$u->id,'action'=>'inventory.item_created','subject_type'=>'inventory_item','subject_id'=>$item->id,'details'=>['branch_id'=>$item->branch_id,'name'=>$item->name]]);
   });
@@ -63,7 +60,7 @@ class InventoryController extends Controller {
   abort_unless($request->user()->isOwner(),403);
   $data=$request->validate(['decision'=>['required',Rule::in(['approve','reject'])]]);
   DB::transaction(function()use($request,$movement,$data){
-   $m=InventoryMovement::where('status','pending')->whereHas('item',fn($q)=>$q->where('business_id',$request->user()->business_id))->findOrFail($movement);
+   $m=InventoryMovement::where('status','pending')->whereHas('item',fn($q)=>app(\App\Services\ActiveBranchContext::class)->scope($q,$request))->findOrFail($movement);
    $stock=InventoryItem::whereKey($m->inventory_item_id)->lockForUpdate()->firstOrFail();
    $m=InventoryMovement::whereKey($m->id)->lockForUpdate()->firstOrFail();
    abort_unless($m->status==='pending',409);

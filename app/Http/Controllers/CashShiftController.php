@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 class CashShiftController extends Controller {
  private function scoped(Request $request){
-  $u=$request->user();return CashShift::where('business_id',$u->business_id)->when($u->isCashier(),fn($q)=>$q->where('branch_id',$u->branch_id));
+  return app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request);
  }
  public function index(Request $request){
   $shifts=$this->scoped($request)->with(['branch','cashier'])->latest()->paginate(15);

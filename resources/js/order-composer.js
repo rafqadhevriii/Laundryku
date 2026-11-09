@@ -4,7 +4,6 @@ if (form) {
     const template = form.querySelector('[data-order-template]');
     const add = form.querySelector('[data-order-add]');
     const customer = form.querySelector('[data-order-customer]');
-    const branch = form.querySelector('[data-order-branch]');
     const announcement = form.querySelector('[data-order-announcement]');
     const rows = () => Array.from(items.querySelectorAll('[data-order-line]'));
     let nextIndex = Math.max(-1, ...rows().map(row => Number(row.dataset.index)).filter(Number.isFinite)) + 1;
@@ -77,20 +76,6 @@ if (form) {
     });
     form.addEventListener('input', refresh);
     form.addEventListener('change', refresh);
-    if (branch) {
-        function syncCustomers(clearMismatched) {
-            if (clearMismatched && customer.value && customer.selectedOptions[0].dataset.branch !== branch.value) customer.value = '';
-            for (const option of customer.options) {
-                if (!option.value) continue;
-                // Preserve invalid old input on first render so it can be corrected.
-                const unavailable = option.dataset.branch !== branch.value && option.value !== customer.value;
-                option.hidden = unavailable;
-                option.disabled = unavailable;
-            }
-            refresh();
-        }
-        branch.addEventListener('change', () => syncCustomers(true));
-        syncCustomers(false);
-    }
+
     refresh();
 }

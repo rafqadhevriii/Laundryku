@@ -10,10 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 class OrderController extends Controller {
  private function scoped(Request $request) {
-  $user=$request->user();
-  $query=Order::query()->where('business_id',$user->business_id);
-  if($user->isCashier()) $query->where('branch_id',$user->branch_id);
-  return $query;
+  return app(\App\Services\ActiveBranchContext::class)->scope(Order::query(),$request);
  }
  public function index(Request $request) {
   $query=$this->scoped($request)->with(['customer','branch','payment']);
@@ -27,13 +24,14 @@ class OrderController extends Controller {
  public function create(Request $request) {
   $user=$request->user();
   return view('orders.create',[
-   'branches'=>$user->isOwner()?$user->business->branches()->where('is_active',true)->orderBy('name')->get():collect(),
-   'customers'=>Customer::where('business_id',$user->business_id)->when($user->isCashier(),fn($q)=>$q->where('branch_id',$user->branch_id))->orderBy('name')->get(),
+   'customers'=>app(\App\Services\ActiveBranchContext::class)->id($request)===null?collect():app(\App\Services\ActiveBranchContext::class)->scope(Customer::query(),$request)->orderBy('name')->get(),
    'services'=>Service::where('business_id',$user->business_id)->where('is_active',true)->orderBy('name')->get()
   ]);
  }
  public function store(Request $request) {
   $user=$request->user();
+  $context=app(\App\Services\ActiveBranchContext::class);
+  $branchId=$context->requireBranch($request)->id;
   $rules=[
    'customer_id'=>['required','integer'],
    'items'=>['required','array','min:1','max:20'],
@@ -41,17 +39,15 @@ class OrderController extends Controller {
    'items.*.quantity'=>['required','numeric','gt:0','max:999999','decimal:0,2'],
    'notes'=>['nullable','string','max:2000'],
   ];
-  if($user->isOwner()) $rules['branch_id']=['required',Rule::exists('branches','id')->where('business_id',$user->business_id)->where('is_active',true)];
   $data=$request->validate($rules);
-  $branchId=$user->isOwner()?(int)$data['branch_id']:(int)$user->branch_id;
   abort_unless($user->isOwner() || $user->branch?->is_active,403);
   $customer=Customer::where('business_id',$user->business_id)->where('branch_id',$branchId)->find($data['customer_id']);
   if(!$customer) throw ValidationException::withMessages(['customer_id'=>'Pelanggan harus berasal dari cabang yang dipilih.']);
   $ids=collect($data['items'])->pluck('service_id');
   $services=Service::where('business_id',$user->business_id)->where('is_active',true)->whereIn('id',$ids)->get()->keyBy('id');
   if($services->count()!==$ids->count()) throw ValidationException::withMessages(['items'=>'Ada layanan yang tidak valid atau tidak aktif.']);
-  $order=DB::transaction(function()use($user,$branchId,$customer,$data,$services){
-   $branch=\App\Models\Branch::where('business_id',$user->business_id)->findOrFail($branchId);
+  $order=DB::transaction(function()use($user,$branchId,$customer,$data,$services,$request,$context){
+   $branch=$context->requireBranch($request,true);
    $items=[];$subtotal=0;$maxHours=0;
    foreach($data['items'] as $entry){
     $service=$services->get((int)$entry['service_id']);

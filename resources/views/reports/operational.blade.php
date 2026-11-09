@@ -4,7 +4,10 @@
 <div class="card"><h2>Filter laporan operasional</h2><form method="GET" action="{{ route('owner.operational.index') }}" class="grid">
 <div><label for="start">Dari tanggal</label><input id="start" type="date" name="start" value="{{ $start }}" required></div>
 <div><label for="end">Sampai tanggal</label><input id="end" type="date" name="end" value="{{ $end }}" required></div>
+@if($activeBranchId===null)
 <div><label for="branch_id">Cabang</label><select id="branch_id" name="branch_id"><option value="">Semua cabang</option>@foreach($branches as $b)<option value="{{ $b->id }}" @selected($branch==$b->id)>{{ $b->name }}</option>@endforeach</select></div>
+@else<div><p class="field-hint">Cabang laporan</p><p class="context-chip">{{ $activeBranchLabel }}</p></div>@endif
+
 <div style="display:flex;align-items:end"><button type="submit">Tampilkan</button><a class="btn" style="margin-left:10px" href="{{ route('owner.operational.excel',request()->query()) }}">Unduh Excel</a></div></form>
 @if($errors->any())<div class="error">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif</div>
 <p class="muted" style="margin:18px 0">Jumlah pesanan dihitung berdasarkan tanggal pesanan dibuat. Pesanan terlambat mencakup pesanan dalam periode yang belum selesai sampai saat laporan dibuka. Kondisi stok menunjukkan jumlah terkini.</p>

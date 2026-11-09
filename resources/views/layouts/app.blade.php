@@ -13,7 +13,8 @@
 <x-layout.topbar/>
 <details class="navigation-fallback"><summary>Menu navigasi</summary><x-layout.sidebar-content/></details>
 <main id="main-content" class="main" tabindex="-1" data-workspace-content>
-<div class="page-heading"><div><p class="eyebrow">{{ auth()->user()->isOwner()?'Pantau & kelola usaha':'Operasional cabang' }}</p><h1>@yield('title','Laundryku')</h1></div><span class="branch-label"><x-ui.icon name="building"/>{{ auth()->user()->isOwner()?'Semua cabang':auth()->user()->branch?->name }}</span></div>
+<div class="page-heading"><div><p class="eyebrow">{{ auth()->user()->isOwner()?'Pantau & kelola usaha':'Operasional cabang' }}</p><h1>@yield('title','Laundryku')</h1></div><span class="branch-label"><x-ui.icon name="building"/>{{ $activeBranchLabel }}</span></div>
+@if(session('branch_context_warning'))<x-ui.alert type="error">{{ session('branch_context_warning') }}</x-ui.alert>@endif
 @if(session('success'))<x-ui.alert>{{ session('success') }}</x-ui.alert>@endif
 @yield('content')
 <footer class="workspace-footer"><span>Laundryku</span><span>Operasional rapi, layanan sepenuh hati.</span></footer>

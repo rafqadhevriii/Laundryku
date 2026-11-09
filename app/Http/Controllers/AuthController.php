@@ -18,11 +18,13 @@ class AuthController extends Controller {
   if(!$user->business?->is_active || ($user->isCashier() && (!$user->branch?->is_active || $user->branch->business_id !== $user->business_id))){
    Auth::logout(); throw ValidationException::withMessages(['username'=>'Akun atau cabang tidak aktif.']);
   }
+  app(\App\Services\ActiveBranchContext::class)->reset($request);
   RateLimiter::clear($key);
   $request->session()->regenerate();
   return redirect()->intended(route('dashboard'));
  }
  public function logout(Request $request) {
+  app(\App\Services\ActiveBranchContext::class)->reset($request);
   Auth::logout(); $request->session()->invalidate(); $request->session()->regenerateToken();
   return redirect()->route('login');
  }

@@ -5,7 +5,10 @@
 <form method="GET" action="{{ route('owner.reports.index') }}" class="grid">
 <div><label for="start">Dari tanggal</label><input id="start" name="start" type="date" value="{{ $start }}" required></div>
 <div><label for="end">Sampai tanggal</label><input id="end" name="end" type="date" value="{{ $end }}" required></div>
+@if($activeBranchId===null)
 <div><label for="branch_id">Cabang</label><select id="branch_id" name="branch_id"><option value="">Semua cabang</option>@foreach($branches as $b)<option value="{{ $b->id }}" @selected($branch==$b->id)>{{ $b->name }}</option>@endforeach</select></div>
+@else<div><p class="field-hint">Cabang laporan</p><p class="context-chip">{{ $activeBranchLabel }}</p></div>@endif
+
 <div style="display:flex;align-items:end;gap:10px"><button>Tampilkan</button><a class="btn" href="{{ route('owner.reports.export',request()->query()) }}">Ekspor CSV</a><a class="btn" href="{{ route('owner.reports.pdf',request()->query()) }}">Unduh PDF</a><a class="btn" href="{{ route('owner.reports.excel',request()->query()) }}">Unduh Excel</a></div>
 </form>
 @if($errors->any())<div class="error">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif

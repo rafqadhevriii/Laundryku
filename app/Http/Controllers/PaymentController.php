@@ -13,8 +13,7 @@ class PaymentController extends Controller {
  private function scoped(Request $request) {
   $user=$request->user()->fresh();
   abort_unless($user?->is_active && $user->business?->is_active && ($user->isOwner() || ($user->isCashier() && $user->branch?->is_active && $user->branch->business_id===$user->business_id)),403);
-  return Order::query()->where('business_id',$user->business_id)
-   ->when($user->isCashier(),fn($q)=>$q->where('branch_id',$user->branch_id));
+  return app(\App\Services\ActiveBranchContext::class)->scope(Order::query(),$request);
  }
  public function store(Request $request,int $order) {
   return $this->record($request,$order,false);

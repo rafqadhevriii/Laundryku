@@ -3,12 +3,14 @@
 @section('content')
 <div class="operation-intro"><div><p class="intro-greeting">Catat pesanan dengan jelas.</p><p class="muted">Pilih pelanggan, layanan, lalu masukkan berat atau jumlah barang.</p></div><x-ui.button :href="route('orders.index')" variant="ghost">Kembali ke pesanan</x-ui.button></div>
 <x-ui.form-feedback/>
+@if($activeBranchId===null)
+<x-ui.branch-required/>
+@else
 @if($customers->isEmpty() || $services->isEmpty())<x-ui.alert type="error">Pastikan sudah ada pelanggan dan layanan aktif sebelum membuat pesanan. <a href="{{ route('customers.create') }}">Tambah pelanggan</a>@if(auth()->user()->isOwner()) · <a href="{{ route('owner.services.create') }}">Tambah layanan</a>@endif</x-ui.alert>@endif
 <form method="POST" action="{{ route('orders.store') }}" data-order-form>@csrf
 <div class="order-composer"><div class="composer-fields">
 <section class="card"><x-ui.section-header title="1. Pelanggan & cabang" description="Pelanggan harus berasal dari cabang yang sama."/>
-@if(auth()->user()->isOwner())<x-ui.select name="branch_id" label="Cabang" required data-order-branch><option value="">Pilih cabang</option>@foreach($branches as $branch)<option value="{{ $branch->id }}" @selected(old('branch_id')==$branch->id)>{{ $branch->name }}</option>@endforeach</x-ui.select>
-@else<p class="context-chip"><x-ui.icon name="building"/>{{ auth()->user()->branch?->name }}</p>@endif
+<p class="context-chip"><x-ui.icon name="building"/><span>Cabang aktif: {{ $activeBranchLabel }}</span></p>
 <x-ui.select name="customer_id" label="Pelanggan" required data-order-customer><option value="">Pilih pelanggan</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" data-branch="{{ $customer->branch_id }}" @selected(old('customer_id')==$customer->id)>{{ $customer->name }} ({{ $customer->phone??'tanpa telepon' }})</option>@endforeach</x-ui.select>
 <p class="field-hint">Belum terdaftar? <a href="{{ route('customers.create') }}">Tambah pelanggan</a> sebelum melanjutkan.</p>
 </section>
@@ -23,4 +25,5 @@
 </div>
 <aside class="card composer-summary" aria-labelledby="summary-title"><p class="eyebrow">Periksa sebelum menyimpan</p><h2 id="summary-title">Ringkasan pesanan</h2><p data-summary-customer class="summary-customer">Pilih pelanggan untuk pesanan ini.</p><ul class="summary-lines" data-summary-lines><li>Tarif tersedia pada pilihan layanan di samping.</li></ul><div class="summary-estimate"><x-ui.icon name="clock"/><p data-summary-duration>Estimasi mengikuti durasi layanan yang dipilih.</p></div><div class="summary-total-note"><strong>Total resmi setelah disimpan</strong><p>Total dihitung dari jumlah × tarif setiap layanan setelah pesanan disimpan. Harga mengikuti tarif saat pemesanan; estimasi selesai mengikuti layanan terlama.</p></div><x-ui.button class="full-width" icon="check">Simpan Pesanan</x-ui.button><x-ui.button :href="route('orders.index')" variant="ghost" class="full-width">Batal</x-ui.button></aside>
 </div></form>
+@endif
 @endsection
