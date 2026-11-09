@@ -1,6 +1,6 @@
 # Status proyek Laundryku
 
-Diperbarui: 2026-11-09. Redesign UI/UX Tahap A.
+Diperbarui: 2026-11-09. Redesign UI/UX Tahap B.
 
 ## Fitur yang sudah dikerjakan
 - Login dan hak akses Pemilik/Kasir, pemisahan usaha dan cabang.
@@ -38,15 +38,24 @@ Diperbarui: 2026-11-09. Redesign UI/UX Tahap A.
 - CSS/JS lokal dibundel Vite, transisi 160ms menghormati prefers-reduced-motion; tabel lama diberi area geser berlabel saat meluber. Grup aksi filter membungkus agar tidak meluber.
 - Tidak mengubah controller, route, middleware, model, kalkulasi, migration, seeder, atau CSS nota standalone. Tahap B/C untuk konten/modul lebih lanjut belum dikerjakan.
 
+## UI/UX Tahap B
+- Branch `feat/uiux-stage-b` dari main cca5d66. Dashboard memakai KPI, konteks periode/cabang dan CTA dari data controller, tanpa angka/tren/grafik buatan.
+- Daftar pesanan mempertahankan GET search/status/query pagination, badge teks pengerjaan/pembayaran, tabel desktop, kartu mobile, pencarian kosong dan tautan detail.
+- Form baru mengelompokkan pelanggan/cabang, layanan dan catatan. Old input/error terasosiasi dipertahankan, baris dinamis berindeks unik sampai 20, kg/barang mengikuti aturan yang ada. Ringkasan hanya menampilkan tarif/jumlah/durasi; total uang dan estimasi resmi tetap dihitung server setelah simpan.
+- Detail menampilkan timeline status tanpa timestamp tahap buatan, rincian snapshot, pembayaran dan riwayat percobaan. Aksi mengikuti state/peran; pickup hanya ditawarkan setelah lunas. Nota 58/80mm tetap memakai route/print standalone.
+- Shift menampilkan saldo tersimpan, status, catatan dan selisih Kurang/Lebih/Sesuai; tutup/review dikonfirmasi tanpa menghitung ulang uang di view.
+- Komponen reusable KPI/badge/empty state/section/form/select/pagination/service-row/confirmation; CSS dan JS lokal melalui Vite. Dialog mendukung keyboard, Escape/backdrop/cancel, fokus kembali, dan reduced motion.
+- Tidak mengubah controller, route, model, middleware, validasi, database/migration/seeder, isolasi usaha/cabang, atau perhitungan keuangan.
+- Batas data untuk PR lanjutan: minimum_weight tersimpan belum diterapkan OrderController; kas masuk langsung belum disediakan controller halaman shift. Tidak menambah aturan minimum, agregasi/query view atau angka nol fiktif. UI shift menyatakan rincian belum tersedia sampai informasi penutupan tersedia. Rincian di docs/uiux/stage-b/README.md.
+
 ## Verifikasi terakhir
-- `npm run build`: berhasil (Vite 7.3.7); public/build dihasilkan dan tetap diabaikan Git sesuai konfigurasi proyek. package-lock.json ditambahkan agar npm ci dapat direproduksi.
-- `php artisan test`: **51 tes lulus, 456 assertions**, pada PHP 8.5.12/MariaDB 11, database laundryku_testing terisolasi. Lima tes UiShellTest menambah pemeriksaan aset lokal, old input/error login/setup, menu role, indikator aktif, akses Kasir, dan nota 58/80mm.
+- npm ci dan npm run build berhasil (Vite 7.3.7, CSS 63,47 kB / gzip 14,91 kB; JS 67,28 kB / gzip 24,85 kB).
+- `php artisan test`: **58 tes lulus, 517 assertions**, PHP 8.5.12/MariaDB 11 pada laundryku_testing terisolasi. Tujuh StageBPresentationTest ditambahkan; seluruh regresi lama tetap dijalankan.
 - `php artisan view:cache` dan `git diff --check`: berhasil.
-- Playwright/Chromium: keyboard drawer (24 Tab), Escape/backdrop/fokus kembali, aria-expanded, toggle password, reduced motion, navigasi tanpa JS, dan validasi setup berhasil. Tidak ada error JavaScript pada pemeriksaan.
-- Responsif: 13 URL x 375/768/1280px tanpa overflow root yang tidak disengaja. Login/setup diperiksa desktop dan mobile. Area tabel besar tetap dapat digeser.
-- axe-core: 0 pelanggaran untuk login, dashboard Pemilik, dialog mobile, dan setup desktop/mobile pada tag WCAG A/AA/2.1AA/2.2AA yang diperiksa. Ini bukan sertifikasi seluruh aplikasi; pembaca layar, perangkat/browser lain, pengguna laundry, dan printer fisik belum diuji.
-- 34 screenshot sebelum/sesudah (login, setup, dashboard Pemilik/Kasir, pesanan, pembayaran, stok, laporan, mobile/drawer/validasi) dan hasil mesin ada di docs/uiux/stage-a. Semuanya memakai fixture sintetis pada database pengujian; database utama tidak diakses/diubah, tidak menjalankan migrasi manual atau mengubah seeder.
-- Detail desain, pemetaan 10 Nielsen Heuristics, kontras, keterbatasan, dan tautan screenshot: docs/uiux/stage-a/README.md.
+- Playwright/Chromium: 14 kelompok pemeriksaan alur termasuk form invalid/multi-layanan, pembayaran/cancel tepat satu request, progres status, retry/penolakan berulang, konfirmasi Pemilik, penutupan/review kas dan nota 58/80mm.
+- Responsif 39 kombinasi (36 halaman/peran/lebar dan 3 kasus pagination) pada 375/768/1280 tanpa overflow root tak disengaja. axe-core pada 21 keadaan Tahap B/dialog: 0 pelanggaran pada tag WCAG A/AA/2.1AA/2.2AA yang diperiksa. Tidak ada error JS.
+- 32 screenshot sebelum/sesudah dan hasil browser ada di docs/uiux/stage-b. Semuanya data sintetis dari controller pada database pengujian. Database utama tidak diakses/diubah, tidak menjalankan migrasi manual atau mengubah seeder.
+- Belum diuji manual pengguna/pembaca layar/perangkat selain Chromium/printer fisik atau konkurensi multiproses. Hasil otomatis bukan sertifikasi seluruh aplikasi.
 
 ## Catatan penerapan fitur data sebelumnya (bukan perubahan Tahap A)
 - Migrasi tambahan `2026_11_09_160000_add_reconciliation_and_payment_attempts.php` hanya menambah kolom nullable dan tabel riwayat. Tidak ada backfill, UPDATE, atau DELETE data nyata pada up(). Migrasi tidak dijalankan pada database utama.
@@ -55,10 +64,10 @@ Diperbarui: 2026-11-09. Redesign UI/UX Tahap A.
 - File utama: PaymentReconciliationController, PaymentController, CashShiftController, OrderController, Payment/PaymentAttempt, routes/web.php, view rekonsiliasi/detail pesanan/layout, migrasi tambahan, tests/Feature, tests/Support/PaymentFixtures, phpunit.xml, dan tests/TestCase.php.
 
 ## Prioritas berikutnya
-- Review PR Tahap A tanpa merge otomatis. Instal dependensi dengan npm ci, lalu npm run build untuk aset produksi; tidak memerlukan perubahan database untuk Tahap A.
-- Tahap B: desain isi dashboard/pesanan/detail/pembayaran/shift tanpa mengubah aturan bisnis. Tahap C: modul lain, audit aksesibilitas menyeluruh dan regresi.
-- Pengujian manual TA tetap mengikuti BLACKBOX_TEST_PLAN.md; pengujian otomatis/screenshot bukan bukti seluruh skenario manual.
-- Rekonsiliasi/retry digital sudah tersedia pada main terbaru; catatan fitur dan batas penerapan data sebelumnya dipertahankan di atas.
+- Review PR Tahap B tanpa merge otomatis. Build aset melalui npm ci dan npm run build; tidak ada perubahan database untuk Tahap B.
+- Tahap C: modul lain (stok/pelanggan/layanan/kasir/pengeluaran/laporan/audit), konsistensi form/tabel, pemeriksaan aksesibilitas menyeluruh dan pengujian pengguna.
+- PR data/controller terpisah untuk keputusan minimum berat dan penyediaan rincian kas masuk langsung; jangan mencampur perubahan aturan bisnis ke PR desain.
+- Pengujian manual TA tetap mengikuti BLACKBOX_TEST_PLAN.md; screenshot dan tes otomatis bukan bukti seluruh skenario manual.
 
 ## Sinkronisasi
 - Codex Website bekerja melalui GitHub. Setelah perubahan Codex digabung di GitHub, tarik perubahan ke folder lokal dengan Git, lalu minta ChatGPT memeriksa file dan tes.

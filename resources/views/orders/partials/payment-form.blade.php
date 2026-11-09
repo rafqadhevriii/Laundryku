@@ -1,0 +1,9 @@
+<form method="POST" action="{{ route($payment?'payments.retry':'payments.store',$order->id) }}" class="payment-form" data-confirm-title="{{ $payment?'Ajukan ulang pembayaran digital?':'Catat pembayaran pesanan?' }}" data-confirm-description="{{ $payment?'Pengajuan ulang digital sebesar Rp '.number_format($order->total,2,',','.').' tetap menunggu konfirmasi Pemilik. Riwayat penolakan sebelumnya tetap disimpan.':'Jumlah penuh pesanan adalah Rp '.number_format($order->total,2,',','.').'. Tunai langsung lunas; transfer/QRIS tetap menunggu konfirmasi Pemilik.' }}">@csrf
+<x-ui.select name="method" label="Metode pembayaran" required>
+@if(!$payment)<option value="cash" @selected(old('method','cash')==='cash')>Tunai (langsung lunas)</option>@endif
+<option value="transfer" @selected(old('method',$payment?'transfer':'cash')==='transfer')>Transfer (perlu konfirmasi pemilik)</option><option value="qris" @selected(old('method')==='qris')>QRIS manual (perlu konfirmasi pemilik)</option></x-ui.select>
+@if(!$payment && auth()->user()->isOwner())
+<x-ui.select name="cash_shift_id" label="Shift penerima tunai" hint="Wajib untuk tunai. Pilih shift aktif pada cabang pesanan; tidak diperlukan untuk transfer/QRIS."><option value="">Pilih shift aktif pada cabang ini</option>@foreach($cashShifts as $shift)<option value="{{ $shift->id }}" @selected(old('cash_shift_id')==$shift->id)>{{ $shift->cashier?->name }} — {{ $shift->opened_at->format('d/m/Y H:i') }}</option>@endforeach</x-ui.select>
+@elseif(!$payment)<p class="field-hint">Pembayaran tunai dicatat ke shift aktif Anda. <a href="{{ route('shifts.index') }}">Buka shift</a> sebelum menerima tunai.</p>@endif
+<x-ui.field name="reference" label="Referensi transaksi (opsional)" maxlength="120"/><x-ui.field name="notes" label="Catatan (opsional)" maxlength="1000"/>
+<x-ui.button class="full-width" icon="wallet">{{ $payment?'Ajukan Ulang Pembayaran Digital':'Catat Pembayaran' }}</x-ui.button></form>

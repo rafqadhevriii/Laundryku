@@ -1,65 +1,30 @@
 @extends('layouts.app')
 @section('title','Detail Pesanan')
 @section('content')
-<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-<div class="card"><h2>{{ $order->order_number }}</h2><p><a class="btn" href="{{ route('orders.receipt',$order->id) }}">Cetak Nota</a></p>
-<p><span class="muted">Pelanggan:</span> {{ $order->customer?->name }}</p>
-<p><span class="muted">Cabang:</span> {{ $order->branch?->name }}</p>
-<p><span class="muted">Dibuat:</span> {{ $order->created_at->format('d/m/Y H:i') }}</p>
-<p><span class="muted">Estimasi selesai:</span> {{ $order->estimated_at?->format('d/m/Y H:i') }}</p>
-<p><span class="muted">Status:</span> {{ ['received'=>'Diterima','processing'=>'Sedang diproses','ready'=>'Siap diambil','picked_up'=>'Sudah diambil','cancelled'=>'Dibatalkan'][$order->status]??$order->status }}</p>
-@if($order->estimated_at && now()->greaterThan($order->estimated_at) && !in_array($order->status,['ready','picked_up','cancelled']))<p class="error">Pesanan melewati estimasi selesai.</p>@endif
-@if($order->notes)<p><span class="muted">Catatan:</span> {{ $order->notes }}</p>@endif
+@php($payment=$order->payment)
+<x-ui.form-feedback/>
+<div class="operation-intro"><div><p class="eyebrow">Nomor pesanan</p><p class="order-identity">{{ $order->order_number }}</p><div class="badge-group"><x-ui.status-badge :status="$order->status"/><x-ui.status-badge domain="payment" :status="$payment?->status"/></div></div><div class="action-group"><x-ui.button :href="route('orders.receipt',['order'=>$order->id,'paper'=>'80'])" variant="ghost" icon="report">Nota 80mm</x-ui.button><x-ui.button :href="route('orders.receipt',['order'=>$order->id,'paper'=>'58'])" variant="ghost">Nota 58mm</x-ui.button></div></div>
+<section class="card"><x-ui.section-header title="Perjalanan pesanan" description="Tahapan mengikuti status terakhir. Waktu setiap tahapan belum tersedia."/>
+@if($order->status==='cancelled')<p class="notice notice-danger">Pesanan dibatalkan. Tidak ada tindakan pengerjaan berikutnya.</p>
+@else
+@php($steps=['received'=>'Diterima','processing'=>'Diproses','ready'=>'Siap diambil','picked_up'=>'Sudah diambil'])
+@php($current=array_search($order->status,array_keys($steps),true))
+<ol class="order-timeline" aria-label="Tahapan pengerjaan">@foreach($steps as $value=>$label)<li class="{{ $loop->index<=$current?'step-reached':'' }} {{ $value===$order->status?'step-current':'' }}" @if($value===$order->status) aria-current="step" @endif><span class="step-marker" aria-hidden="true">@if($loop->index<$current)<x-ui.icon name="check"/>@else{{ $loop->iteration }}@endif</span><div><strong>{{ $label }}</strong><small>{{ $value===$order->status?'Status saat ini':($loop->index<$current?'Sudah dilewati':'Tahap berikutnya') }}</small></div></li>@endforeach</ol>
+@endif
 @php($next=['received'=>'processing','processing'=>'ready','ready'=>'picked_up'])
 @if(isset($next[$order->status]))
-<form method="POST" action="{{ route('orders.status',$order->id) }}">@csrf @method('PATCH')
-<input type="hidden" name="status" value="{{ $next[$order->status] }}">
-<button>{{ ['received'=>'Mulai Proses','processing'=>'Tandai Siap Diambil','ready'=>'Tandai Sudah Diambil'][$order->status] }}</button></form>
+<div class="next-action">@if($order->status==='ready' && $payment?->status!=='paid')<p><strong>Lunasi pembayaran sebelum penyerahan.</strong><br><a href="#payment-section">Periksa pembayaran pesanan</a>.</p>@else
+<div><strong>Tindakan berikutnya</strong><p>{{ ['received'=>'Mulai pengerjaan setelah rincian pesanan diperiksa.','processing'=>'Tandai siap jika seluruh layanan telah selesai.','ready'=>'Pastikan cucian sudah diserahkan kepada pelanggan.'][$order->status] }}</p></div>
+<form method="POST" action="{{ route('orders.status',$order->id) }}" @if($order->status==='ready') data-confirm-title="Tandai pesanan sudah diambil?" data-confirm-description="Pastikan cucian {{ $order->order_number }} sudah diserahkan. Status ini tidak dapat dikembalikan melalui aplikasi." @endif>@csrf @method('PATCH')<input type="hidden" name="status" value="{{ $next[$order->status] }}"><x-ui.button icon="arrow">{{ ['received'=>'Mulai Proses','processing'=>'Tandai Siap Diambil','ready'=>'Tandai Sudah Diambil'][$order->status] }}</x-ui.button></form>
+@endif</div>
 @endif
-@error('status')<p class="error">{{ $message }}</p>@enderror
+<x-ui.field-error name="status"/></section>
+<div class="detail-grid section-spaced">
+<section class="card"><x-ui.section-header title="Informasi pesanan"/><dl class="identity-list"><div><dt>Pelanggan</dt><dd>{{ $order->customer?->name??'Tidak tersedia' }}</dd></div><div><dt>Cabang</dt><dd>{{ $order->branch?->name }}</dd></div><div><dt>Dibuat</dt><dd>{{ $order->created_at->format('d/m/Y H:i') }}</dd></div><div><dt>Dicatat oleh</dt><dd>{{ $order->creator?->name }}</dd></div><div><dt>Estimasi selesai</dt><dd>{{ $order->estimated_at?->format('d/m/Y H:i')??'Belum tersedia' }}</dd></div>@if($order->picked_up_at)<div><dt>Diambil</dt><dd>{{ $order->picked_up_at->format('d/m/Y H:i') }}</dd></div>@endif</dl>
+@if($order->estimated_at && now()->greaterThan($order->estimated_at) && !in_array($order->status,['ready','picked_up','cancelled']))<p class="notice notice-danger">Pesanan melewati estimasi selesai.</p>@endif
+@if($order->notes)<div class="order-notes"><h3>Catatan pesanan</h3><p>{{ $order->notes }}</p></div>@endif</section>
+<section class="card"><x-ui.section-header title="Rincian layanan" description="Harga mengikuti tarif saat pesanan dibuat."/><div class="table-wrap"><table><caption class="sr-only">Layanan pesanan {{ $order->order_number }}</caption><thead><tr><th scope="col">Layanan</th><th scope="col">Jumlah</th><th scope="col">Tarif</th><th scope="col">Subtotal</th></tr></thead><tbody>@foreach($order->items as $item)<tr><th scope="row" class="row-heading">{{ $item->service_name }}</th><td>{{ $item->quantity }} {{ $item->unit }}</td><td class="money">Rp {{ number_format($item->unit_price,2,',','.') }}</td><td class="money">Rp {{ number_format($item->subtotal,2,',','.') }}</td></tr>@endforeach</tbody></table></div><div class="order-total"><span>Total pesanan</span><strong>Rp {{ number_format($order->total,2,',','.') }}</strong></div></section>
 </div>
-<div class="card"><h2>Rincian layanan</h2><table><thead><tr><th>Layanan</th><th>Jumlah</th><th>Harga</th><th>Subtotal</th></tr></thead><tbody>
-@foreach($order->items as $item)<tr><td>{{ $item->service_name }}</td><td>{{ $item->quantity }} {{ $item->unit }}</td><td>Rp {{ number_format($item->unit_price,0,',','.') }}</td><td>Rp {{ number_format($item->subtotal,0,',','.') }}</td></tr>@endforeach
-</tbody></table><h2 style="text-align:right">Total: Rp {{ number_format($order->total,0,',','.') }}</h2>
-<p class="muted">Harga mengikuti tarif saat pesanan dibuat.</p></div></div>
-<div class="card" style="margin-top:20px"><h2>Pembayaran</h2>
-@php($payment=$order->payment)
-@if(!$payment || $payment->status==='rejected')
-<p class="muted">Total yang harus dibayar: Rp {{ number_format($order->total,0,',','.') }}. Pembayaran harus lunas sekaligus.</p>
-@if($payment?->status==='rejected')<p class="error">Pembayaran sebelumnya ditolak: {{ $payment->notes }}. Ajukan ulang transfer/QRIS untuk konfirmasi Pemilik.</p>@endif
-<form method="POST" action="{{ route($payment?'payments.retry':'payments.store',$order->id) }}">@csrf
-<label for="method">Metode pembayaran</label><select id="method" name="method" required>@if(!$payment)<option value="cash">Tunai (langsung lunas)</option>@endif<option value="transfer">Transfer (perlu konfirmasi pemilik)</option><option value="qris">QRIS manual (perlu konfirmasi pemilik)</option></select>
-@if(!$payment && auth()->user()->isOwner())
-<label for="cash_shift_id">Shift penerima tunai (wajib untuk tunai)</label>
-<select id="cash_shift_id" name="cash_shift_id"><option value="">Pilih shift aktif pada cabang ini</option>
-@foreach($cashShifts as $shift)<option value="{{ $shift->id }}" @selected(old('cash_shift_id') == $shift->id)>{{ $shift->cashier?->name }} — {{ $shift->opened_at->format('d/m/Y H:i') }}</option>@endforeach</select>
-@error('cash_shift_id')<p class="error">{{ $message }}</p>@enderror
-@elseif(!$payment)
-<p class="muted">Pembayaran tunai dicatat ke shift aktif Anda. Buka shift sebelum menerima tunai.</p>
-@endif
-<label for="reference">Referensi transaksi (opsional)</label><input id="reference" name="reference" maxlength="120">
-<label for="notes">Catatan (opsional)</label><input id="notes" name="notes" maxlength="1000">
-@error('method')<p class="error">{{ $message }}</p>@enderror
-<button style="margin-top:15px">{{ $payment?'Ajukan Ulang Pembayaran Digital':'Catat Pembayaran' }}</button></form>
-@else
-<p>Metode: {{ ['cash'=>'Tunai','transfer'=>'Transfer','qris'=>'QRIS'][$payment->method]??$payment->method }}</p>
-<p>Jumlah: Rp {{ number_format($payment->amount,0,',','.') }}</p>
-<p>Status: {{ ['pending'=>'Menunggu konfirmasi','paid'=>'Lunas','rejected'=>'Ditolak'][$payment->status]??$payment->status }}</p>
-@if($payment->reference)<p>Referensi: {{ $payment->reference }}</p>@endif
-@if($payment->notes)<p>Catatan: {{ $payment->notes }}</p>@endif
-@if($payment->status==='pending' && auth()->user()->isOwner())
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<form method="POST" action="{{ route('payments.confirm',$order->id) }}">@csrf @method('PATCH')<button>Konfirmasi Lunas</button></form>
-<form method="POST" action="{{ route('payments.reject',$order->id) }}">@csrf @method('PATCH')<input name="notes" placeholder="Alasan penolakan" required><button style="margin-top:8px;background:#b91c1c">Tolak Pembayaran</button></form>
-</div>
-@endif
-@endif
-@error('payment')<p class="error">{{ $message }}</p>@enderror
-@if($payment && $payment->attempts->isNotEmpty())
-<h3>Riwayat percobaan pembayaran</h3><div style="overflow:auto"><table><thead><tr><th>Percobaan / Waktu</th><th>Metode / Referensi</th><th>Jumlah</th><th>Status / Keputusan</th><th>Pencatat / Peninjau</th></tr></thead><tbody>
-@foreach($payment->attempts as $attempt)<tr><td>#{{ $attempt->attempt_number }} — {{ $attempt->submitted_at?->format('d/m/Y H:i') }}</td><td>{{ strtoupper($attempt->method) }} / {{ $attempt->reference??'-' }}<br>{{ $attempt->notes }}</td><td>Rp {{ number_format($attempt->amount,0,',','.') }}</td><td>{{ ['pending'=>'Menunggu konfirmasi','paid'=>'Lunas','rejected'=>'Ditolak'][$attempt->status]??$attempt->status }}<br>{{ $attempt->rejection_reason }}<br>{{ $attempt->decided_at?->format('d/m/Y H:i') }}</td><td>{{ $attempt->recorder?->name }} / {{ $attempt->confirmer?->name??'-' }}</td></tr>@endforeach
-</tbody></table></div>
-@endif
-</div>
-<p style="margin-top:20px"><a href="{{ route('orders.index') }}">Kembali ke daftar pesanan</a></p>
+@include('orders.partials.payment')
+<x-ui.button :href="route('orders.index')" variant="ghost" class="section-spaced">Kembali ke daftar pesanan</x-ui.button>
 @endsection

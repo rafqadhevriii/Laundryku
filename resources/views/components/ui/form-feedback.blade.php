@@ -1,0 +1,1 @@
+@if($errors->any())<x-ui.alert type="error" {{ $attributes }}><strong>Periksa kembali isian Anda.</strong><ul class="error-list">@foreach($errors->all() as $message)<li>{{ $message }}</li>@endforeach</ul></x-ui.alert>@endif

@@ -1,5 +1,16 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-09 (UI/UX Tahap B)
+- Mendesain dashboard Pemilik/Kasir dengan KPI dari data controller, konteks periode/cabang, CTA nyata, prioritas pekerjaan dan empty state. Tidak membuat angka/grafik dekoratif.
+- Mendesain daftar pesanan: pencarian/status GET tetap, badge teks, tabel desktop/kartu mobile, jumlah hasil dan pagination yang menjaga query.
+- Mengelompokkan form tambah pesanan, mengasosiasikan label/error, menjaga old input termasuk indeks layanan berlubang, serta menambah/hapus hingga 20 baris. Ringkasan tarif/jumlah/durasi tanpa kalkulasi uang klien; harga/total/estimasi resmi tetap dari server.
+- Menambahkan timeline berbasis status, rincian snapshot, nota 58/80mm, pembayaran/riwayat percobaan, aksi sesuai state/peran, dan dialog konfirmasi transaksi/pickup/tutup-review shift. Nilai shift memakai hasil tersimpan tanpa query/agregasi keuangan baru di view.
+- Komponen baru: ui/kpi, status-badge, empty-state, section-header, form-feedback, field-error, select, pagination, confirm-dialog dan orders/service-row; partial pembayaran, CSS terpusat, JS order-composer/confirm-actions lokal.
+- File terkait: views dashboard/orders/shifts, layouts/app, komponen/partial tersebut, resources/css/app.css, resources/js/app.js dan dua modul JS, StageBPresentationTest, PROGRESS dan docs/uiux/stage-b (32 screenshot, laporan, hasil mesin).
+- Hasil sebenarnya: npm ci/build berhasil; php artisan test **58 lulus / 517 assertions**; view:cache dan diff --check berhasil. Playwright memeriksa 14 kelompok alur dan 39 kombinasi peran/lebar layar (termasuk pagination) tanpa overflow root. axe pada 21 keadaan: 0 pelanggaran; tidak ada error JS. Bukti dan keterbatasan pada laporan Tahap B.
+- Controller/route/model/middleware/validasi/database/migration/seeder/aturan bisnis tidak diubah; database utama tidak diakses. Minimum berat yang belum diterapkan dan rincian kas masuk yang belum disediakan controller dicatat untuk PR terpisah, tanpa mengarang data atau menambah aturan di UI.
+- Belum menguji pembaca layar/pengguna/perangkat lain/printer fisik/konkurensi multiproses. Tahap C dan tindak lanjut data tetap terpisah. PR baru, jangan merge otomatis.
+
 ## 2026-11-09 (UI/UX Tahap A)
 - Menambahkan identitas SVG orisinal Laundryku (logo terang/gelap, mark, favicon) dan set ikon inline orisinal, tanpa CDN/font/aset pihak ketiga untuk fungsi inti.
 - Memindahkan CSS layout ke tokens navy/teal/putih dan tipografi lokal melalui Vite. Menambahkan package-lock.json untuk npm ci; aset produksi dihasilkan pada public/build sesuai .gitignore.
