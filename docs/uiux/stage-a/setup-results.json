@@ -1,0 +1,16 @@
+{
+  "accessibility": [
+    {
+      "size": "desktop",
+      "violations": []
+    },
+    {
+      "size": "mobile",
+      "violations": []
+    }
+  ],
+  "checks": [
+    "Setup responsive with no overflow",
+    "Invalid setup: old nonsecret values preserved, password cleared, errors associated with fields"
+  ]
+}

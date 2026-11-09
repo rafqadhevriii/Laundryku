@@ -1,19 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 @section('title','Siapkan Usaha Laundry')
 @section('content')
-<div class="card" style="max-width:520px;margin:0 auto"><h2>Daftarkan pemilik pertama</h2>
-<p class="muted">Langkah awal ini hanya tersedia sebelum ada pengguna.</p>
-<form method="POST" action="{{ route('setup.store') }}">@csrf
-<label for="business_name">Nama usaha</label><input id="business_name" name="business_name" value="{{ old('business_name') }}" required>
-@error('business_name')<p class="error">{{ $message }}</p>@enderror
-<label for="owner_name">Nama pemilik</label><input id="owner_name" name="owner_name" value="{{ old('owner_name') }}" required>
-@error('owner_name')<p class="error">{{ $message }}</p>@enderror
-<label for="username">Username</label><input id="username" name="username" value="{{ old('username') }}" required>
-@error('username')<p class="error">{{ $message }}</p>@enderror
-<label for="email">Email</label><input id="email" name="email" type="email" value="{{ old('email') }}" required>
-@error('email')<p class="error">{{ $message }}</p>@enderror
-<label for="password">Password</label><input id="password" name="password" type="password" required minlength="8">
-@error('password')<p class="error">{{ $message }}</p>@enderror
-<label for="password_confirmation">Ulangi password</label><input id="password_confirmation" name="password_confirmation" type="password" required minlength="8">
-<button style="width:100%;margin-top:24px">Buat Usaha dan Akun Pemilik</button></form></div>
+<p class="eyebrow">Langkah pertama</p><h1>Mulai kelola usaha Anda</h1><p class="auth-intro">Siapkan identitas usaha dan akun Pemilik pertama. Semua kolom wajib diisi.</p>
+<div class="setup-note"><x-ui.icon name="building"/><span>Penyiapan ini hanya tersedia sebelum ada pengguna.</span></div>
+@if($errors->any())<x-ui.alert type="error"><strong>Periksa kembali data Anda.</strong> Perbaiki isian yang ditandai sebelum melanjutkan.</x-ui.alert>@endif
+<form method="POST" action="{{ route('setup.store') }}" data-pending-form>@csrf
+<x-ui.field name="business_name" label="Nama usaha" required maxlength="150" autocomplete="organization"/>
+<x-ui.field name="owner_name" label="Nama pemilik" required maxlength="255" autocomplete="name"/>
+<div class="form-row"><x-ui.field name="username" label="Username" required maxlength="50" autocomplete="username" autocapitalize="none" spellcheck="false"/><x-ui.field name="email" label="Email" type="email" required maxlength="255" autocomplete="email"/></div>
+<x-ui.field name="password" label="Password" type="password" required minlength="8" autocomplete="new-password" hint="Gunakan minimal 8 karakter."/>
+<x-ui.field name="password_confirmation" label="Ulangi password" type="password" required minlength="8" autocomplete="new-password"/>
+<x-ui.button class="auth-submit" icon="arrow" data-pending-label="Menyiapkan usaha…">Buat Usaha dan Akun Pemilik</x-ui.button>
+</form>
 @endsection
