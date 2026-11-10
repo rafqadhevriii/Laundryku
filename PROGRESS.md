@@ -1,6 +1,6 @@
 # Status proyek Laundryku
 
-Diperbarui: 2026-11-10. Penyempurnaan minimum berat dan kas shift aktif.
+Diperbarui: 2026-11-10. Lingkungan Black Box manual terisolasi.
 
 ## Fitur yang sudah dikerjakan
 - Login dan hak akses Pemilik/Kasir, pemisahan usaha dan cabang.
@@ -109,3 +109,18 @@ Diperbarui: 2026-11-10. Penyempurnaan minimum berat dan kas shift aktif.
 - Validasi: npm ci/build, view:cache, diff --check berhasil; **82 tes / 809 assertion lulus** di laundryku_testing. Delapan tes fitur baru mencakup berat, mixed units, snapshot, live cash/metode/status/ID shift/cabang/usaha, overlap, saldo final -2000, review, rekonsiliasi dan scope penugasan lama. Close diuji memasukkan penerimaan baru setelah halaman dibuka.
 - Browser Chromium desktop1280/mobile375: 8 kondisi axe tanpa pelanggaran, nol overflow/error JS; submit berat0,5 menghasilkan4000, gabungan34000, saldo aktif140000 dan warning historis benar, Pemilik All/Cabang Selatan tetap scoped. Empat screenshot sintetis, skrip dan hasil ada di docs/pre-blackbox.
 - BB-41–BB-52 ditambahkan, semuanya **Belum diuji manual**. Database utama tidak diakses; tidak menjalankan migrasi manual. Berikutnya review PR dan Black Box oleh pengguna laundry. Ringkasan bukan real-time (muat ulang diperlukan); belum uji pembaca layar/perangkat/printer fisik atau konkurensi multiproses. Jangan merge otomatis.
+
+## Lingkungan Black Box manual
+- Branch `feat/manual-blackbox-environment` dari main `a054840`. Membaca AGENTS, BLACKBOX_TEST_PLAN, BLACKBOX_MANUAL_GUIDE, PROGRESS sebelum implementasi.
+- Launcher `php scripts/blackbox.php setup|advanced|status|serve` hanya menerima command/host/port terbatas, tanpa reset/wipe/target database lain. .env.blackbox whitelist terpisah, APP_ENV blackbox, connection blackbox dan nama laundryku_blackbox exact. Koneksi khusus tidak memakai DB_URL/DB_DATABASE generik.
+- Guard sebelum setup dan pada runtime memeriksa environment/default connection/config, SELECT DATABASE aktual serta SHOW GRANTS. Root/global privilege/schema lain/role/GRANT OPTION/wildcard schema ditolak; akun DB harus hanya schema literal laundryku\_blackbox. Engine DB menolak write ke database lain.
+- APP_KEY lokal acak, cache config/route bersama dihindari, storage/session/cookie/cache/view/log/bukti terisolasi di storage/blackbox. File kredensial/key/evidence diabaikan Git. Profil utama dan PHPUnit tidak diarahkan ulang.
+- Setup memakai advisory lock dan hanya schema kosong: migrasi forward yang sudah ada lalu fixture transaksi; tidak memakai seeder umum dan menolak setup ulang tanpa menimpa data. Kegagalan DDL parsial ditinggal untuk peninjauan, tidak dihapus otomatis.
+- Profil awal:1Pemilik/2cabang/2Kasir/4pelanggan/3layanan/2stok/6pesanan/2shift. Minimum2kg/tarif8000, order0,5kg4000, cashA25000+15000/expected140000. Akun bb.pemilik/bb.kasir.a/bb.kasir.b memakai password lokal pilihan penguji, tidak dikomit.
+- Advanced opsional append-only untuk historis/retry/overlap/usaha asing, diaktifkan sesudah tahap dasar. Pengulangan ditolak. Dokumentasi menjelaskan akun/fixture tambahan, kondisi negatif/nonaktif yang masih memerlukan persiapan penguji dan dependensi waktu/shift.
+- BLACKBOX_MANUAL_GUIDE dan prasyarat BLACKBOX_TEST_PLAN kini menunjuk laundryku_blackbox (bukan laundryku_testing). docs/blackbox memuat setup Laragon/Linux/container, urutan52, templateCSV52ID unik dan pola screenshot. Seluruh hasil aktual/penguji/waktu/gambar kosong; status **Belum diuji manual**.
+- Verifikasi aktual: **98 tes / 1.120 assertion lulus** pada laundryku_testing. Unit guard menolak protected DB/URL/override/grant/cache dan memeriksa isolasi key/sesi serta template kosong. Setup nyata pada MariaDB manual terpisah berhasil; setup ulang/advanced ulang ditolak tanpa perubahan. Status fixture manual tetap sama setelah PHPUnit.
+- Dua schema canary sintetis bernama laundryku/laundryku_testing hanya pada server manual disposable dipakai untuk membuktikan penolakan write oleh akun terbatas; ini bukan server/data utama atau PHPUnit sebenarnya. Root hanya dipakai provisioning server disposable, bukan aplikasi/launcher.
+- Smoke browser otomatis berhasil login3akun, cookie khusus, saldoA140000 dan isolasi daftarA/B; view:cache/diff --check lulus. Tidak ada hasil52kasus manual diisi. Ruang disk sempat habis saat membuat container PHP tambahan; hanya container preview PHP lama yang tidak dipakai dihapus, semua container database dipertahankan, pemeriksaan dilanjutkan pada container manual.
+- File: config/database, AppServiceProvider guard blackbox-only, app/Support/Blackbox, scripts/blackbox*, .env.blackbox.example/.gitignore, BlackboxSafetyTest/BlackboxFixtureGuardTest, docs/blackbox, panduan/PROGRESS/CHANGELOG. Tidak mengubah route/controller/logika uang/validasi/schema migration atau seeder aplikasi umum. Database utama tidak diakses/diubah; hanya schema manual kosong yang diinisialisasi.
+- Batasan: belum UAT/hasil manual/pengujian printer atau stress multiproses; tidak ada reset/resume otomatis schema parsial. Instance verifikasi sudah advanced, profil baru dari setup kosong tetap profil awal. Berikutnya penguji menjalankan urutan dan mencatat bukti nyata. PR terpisah, jangan merge otomatis.

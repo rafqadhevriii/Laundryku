@@ -5,7 +5,7 @@ Status: SKENARIO DISIAPKAN, BELUM DIUJI MANUAL.
 Metode: Black Box Testing, menguji input, tindakan pengguna, dan keluaran tanpa memeriksa implementasi internal.
 
 ## Prasyarat
-- Gunakan data uji, bukan data pelanggan asli.
+- Gunakan data uji, bukan data pelanggan asli. Lingkungan manual wajib laundryku_blackbox; setup/urutan teknis ada di docs/blackbox/README.md dan BLACKBOX_MANUAL_GUIDE.md. Jangan memakai laundryku_testing karena dapat direset PHPUnit.
 - Siapkan satu akun Pemilik, dua akun Kasir berbeda cabang, minimal dua cabang, pelanggan uji, layanan, dan stok uji.
 - Jalankan pada lingkungan uji atau cadangan data aman. Jangan menghapus database operasional.
 - Catat tanggal, penguji, browser, bukti screenshot, hasil aktual, dan status Lulus/Gagal untuk setiap kasus.
@@ -42,7 +42,7 @@ Metode: Black Box Testing, menguji input, tindakan pengguna, dan keluaran tanpa 
 
 ## Tambahan skenario rekonsiliasi dan retry
 
-Tetap gunakan data sintetis pada database pengujian. Tambahkan usaha kedua, shift tumpang tindih, satu shift final, pembayaran cash/paid tanpa ID shift, dan transfer rejected sebagai fixture. Jangan membuat fixture pada data utama. Semua baris berikut adalah rencana pengujian manual, belum hasil manual.
+Untuk pelaksanaan manual tetap gunakan data sintetis pada laundryku_blackbox, bukan database PHPUnit. Tambahkan usaha kedua, shift tumpang tindih, satu shift final, pembayaran cash/paid tanpa ID shift, dan transfer rejected sebagai fixture. Jangan membuat fixture pada data utama. Semua baris berikut adalah rencana pengujian manual, belum hasil manual.
 
 | ID | Modul | Peran | Langkah / data uji | Hasil yang diharapkan | Hasil aktual | Status |
 |---|---|---|---|---|---|---|
@@ -64,7 +64,7 @@ Tetap gunakan data sintetis pada database pengujian. Tambahkan usaha kedua, shif
 
 ## Tambahan skenario penyempurnaan sebelum Black Box (2026-11-10)
 
-Gunakan hanya fixture sintetis pada laundryku_testing: layanan kg tarif 8000 dengan minimum 2 kg, layanan item 15000, saldo awal shift 100000, dua penerimaan cash/paid terhubung 25000 dan 15000, shift beberapa Kasir/cabang/usaha, serta tunai historis tanpa shift. Minimum adalah informasi, bukan minimum charge. Semua hasil manual di bawah tetap belum diuji.
+Untuk pengujian manual gunakan hanya fixture sintetis pada laundryku_blackbox (laundryku_testing khusus tes otomatis): layanan kg tarif 8000 dengan minimum 2 kg, layanan item 15000, saldo awal shift 100000, dua penerimaan cash/paid terhubung 25000 dan 15000, shift beberapa Kasir/cabang/usaha, serta tunai historis tanpa shift. Minimum adalah informasi, bukan minimum charge. Semua hasil manual di bawah tetap belum diuji.
 
 | ID | Modul | Peran | Langkah / data uji | Hasil yang diharapkan | Hasil aktual | Status |
 |---|---|---|---|---|---|---|

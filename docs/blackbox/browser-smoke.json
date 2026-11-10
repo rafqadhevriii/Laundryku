@@ -1,0 +1,22 @@
+{
+  "environment": "blackbox",
+  "database": "laundryku_blackbox",
+  "automatedSmoke": [
+    {
+      "account": "bb.pemilik",
+      "login": "verified automatically",
+      "isolatedSessionCookie": true
+    },
+    {
+      "account": "bb.kasir.a",
+      "login": "verified automatically",
+      "isolatedSessionCookie": true
+    },
+    {
+      "account": "bb.kasir.b",
+      "login": "verified automatically",
+      "isolatedSessionCookie": true
+    }
+  ],
+  "manual_results": "Belum diuji manual"
+}

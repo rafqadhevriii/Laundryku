@@ -1,5 +1,14 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-10 (lingkungan Black Box manual)
+- Menambahkan launcher restricted setup/advanced/status/serve untuk APP_ENV blackbox dan database literal laundryku_blackbox. Menolak DB utama/PHPUnit, URL/read-write override, akun root/global/schema lain/role/grant option; memverifikasi nama DB aktual dan grants sebelum operasi.
+- Memisahkan konfigurasi .env.blackbox, APP_KEY lokal, storage/cache/session/cookie/log/view/bukti. Menambahkan ignore kredensial/bukti lokal; konfigurasi utama dan phpunit tidak diubah.
+- Setup hanya schema kosong, migrasi forward dan fixture transaksi; advisory lock, tanpa wipe/reset/rollback otomatis, menolak rerun. Advanced append-only menambah fixture historis/retry/overlap/asing tanpa menimpa data.
+- Profil awal1Pemilik/2cabang/2Kasir, pelanggan/layanan/stok/pesanan/shift sintetis, cashA40000/expected140000 dan minimum2kg/tarif8000. Password akun dipilih lokal, tidak dicetak/dikomit.
+- Memperbarui panduan manual dan prasyarat rencana tes; docs/blackbox berisi setup, akun, urutan52, templateCSV52status Belum diuji manual, format screenshot dan hasil otomatis terpisah. Tidak mengisi Lulus/Gagal manual.
+- **98 tes lulus / 1.120 assertion** di laundryku_testing; setup nyata database manual, penolakan konfigurasi/rerun, isolasi terhadap PHPUnit, grants engine pada canary sintetis, advanced serta login/cookie/cabang browser diverifikasi. view:cache/diff --check lulus.
+- Tidak mengakses/mengubah data utama, controller, route, aturan bisnis/perhitungan, migration atau seeder umum. Schema manual kosong diinisialisasi secara khusus; belum UAT/hasil manual/printer/stress multiproses. PR terpisah tanpa merge otomatis.
+
 ## 2026-11-10 (penyempurnaan sebelum Black Box)
 - Menampilkan minimum berat layanan kg di pilihan dan ringkasan form pesanan, termasuk pesan non-blocking di bawah minimum. Tagihan tetap berat asli; minimum charge, quantity asli dan validasi backend tidak berubah. Unit item tetap bulat tanpa minimum kg.
 - Menampilkan tunai lunas terhubung, jumlah pembayaran dan saldo seharusnya saat ini untuk shift open; diberi label sementara, muat ulang diperlukan dan selisih belum dihitung. Kasir hanya melihat shift sendiri; Pemilik mengikuti konteks cabang aktif.
