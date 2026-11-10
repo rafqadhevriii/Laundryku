@@ -513,3 +513,6 @@ select[aria-invalid='true'], textarea[aria-invalid='true'] { border-color:var(--
  .stock-quantity dd { font-size:21px; }
  .form-actions .btn { flex:1; }
 }
+
+/* Live receipt details stay readable inside the existing shift scroll table. */
+.live-cash-detail { white-space:normal; min-width:160px; max-width:240px; }

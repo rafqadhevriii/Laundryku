@@ -1,5 +1,13 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-10 (penyempurnaan sebelum Black Box)
+- Menampilkan minimum berat layanan kg di pilihan dan ringkasan form pesanan, termasuk pesan non-blocking di bawah minimum. Tagihan tetap berat asli; minimum charge, quantity asli dan validasi backend tidak berubah. Unit item tetap bulat tanpa minimum kg.
+- Menampilkan tunai lunas terhubung, jumlah pembayaran dan saldo seharusnya saat ini untuk shift open; diberi label sementara, muat ulang diperlukan dan selisih belum dihitung. Kasir hanya melihat shift sendiri; Pemilik mengikuti konteks cabang aktif.
+- Mengekstrak query paid cash linked dan historis unreviewed ke helper CashShift untuk display/close. Predicate, lock, transaksi, rumus akhir dan audit penutupan tetap; shift final tidak dihitung ulang. Historis tanpa shift memberi peringatan, tidak diatribusikan otomatis atau dimasukkan; digital/pending/rejected/shift lain dikecualikan.
+- Snapshot pesanan/nota lama tidak diubah. Minimum historis tidak tersedia sehingga tidak diganti dengan konfigurasi layanan terkini. Tidak mengubah database utama/schema/migration/seeder atau menjalankan migrasi manual.
+- Menambahkan 8 tes PreBlackboxRefinementsTest, memperbarui assertion tampilan shift lama, BB-41–BB-52 (belum diuji manual), PROGRESS dan docs/pre-blackbox dengan 4 screenshot sintetis desktop/mobile, hasil mesin dan skrip.
+- Hasil: **82 tes lulus / 809 assertion**, laundryku_testing; npm ci/build, view:cache dan diff --check lulus. Browser/axe pada 8 kondisi tanpa pelanggaran/overflow/error JS; total aktual4000/mixed34000 dan ringkasan140000 terverifikasi. UAT manual/perangkat fisik/konkurensi masih belum dilakukan. PR terpisah, tanpa merge otomatis.
+
 ## 2026-11-10 (UI/UX Tahap C)
 - Merapikan pelanggan, stok bahan, pengeluaran, layanan/harga, akun Kasir, laporan pendapatan/operasional, rekonsiliasi dan riwayat aktivitas memakai identitas A, komponen B dan konteks cabang aktif.
 - Menambahkan form-control/data-table/report-filter/workspace-context, badge teks stok/persetujuan/aktif/rekonsiliasi, ikon plus/cari/unduh/tag orisinal; CSS/JS lokal Vite. Pagination mempertahankan query dan memakai renderer B.
