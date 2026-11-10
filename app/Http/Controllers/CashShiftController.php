@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\CashShift;
-use App\Models\Payment;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,9 +10,20 @@ class CashShiftController extends Controller {
   return app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request);
  }
  public function index(Request $request){
-  $shifts=$this->scoped($request)->with(['branch','cashier'])->latest()->paginate(15);
-  $open=$request->user()->isCashier()?CashShift::where('cashier_id',$request->user()->id)->where('status','open')->first():null;
-  return view('shifts.index',compact('shifts','open'));
+  $query=$this->scoped($request)->when($request->user()->isCashier(),fn($q)=>$q->where('cashier_id',$request->user()->id));
+  $shifts=$query->with(['branch','cashier'])->latest()->paginate(15);
+  $open=$request->user()->isCashier()?$this->scoped($request)->where('cashier_id',$request->user()->id)->where('status','open')->first():null;
+  $liveCash=[];
+  // Read-only receipt aggregates, never recompute or persist a final shift balance.
+  $active=$shifts->getCollection()->where('status','open')->keyBy('id');
+  if($open)$active->put($open->id,$open);
+  foreach($active as $shift){
+   $totals=$shift->paidCashPayments()->selectRaw('COUNT(*) as receipt_count, COALESCE(SUM(amount),0) as receipt_total')->first();
+   $liveCash[$shift->id]=['cash'=>(float)$totals->receipt_total,'count'=>(int)$totals->receipt_count,
+    'expected'=>round((float)$shift->opening_cash+(float)$totals->receipt_total,2),
+    'unreviewed'=>$shift->unreviewedHistoricalCash()->exists()];
+  }
+  return view('shifts.index',compact('shifts','open','liveCash'));
  }
  public function store(Request $request){
   abort_unless($request->user()->isCashier(),403);
@@ -36,11 +46,9 @@ class CashShiftController extends Controller {
    abort_unless($s->cashier_id===$request->user()->id && $s->status==='open',403);
    // Jangan tutup dengan angka lebih kecil jika shift lama masih memuat
    // pembayaran sebelum pengaitan shift diperkenalkan. Tidak menebak pemiliknya.
-   $unassigned=Payment::whereNull('cash_shift_id')->where('method','cash')->where('status','paid')
-    ->whereNull('reconciliation_status')->whereBetween('paid_at',[$s->opened_at,now()])
-    ->whereHas('order',fn($q)=>$q->where('business_id',$s->business_id)->where('branch_id',$s->branch_id))->exists();
+   $unassigned=$s->unreviewedHistoricalCash()->exists();
    if($unassigned) throw ValidationException::withMessages(['closing_cash'=>'Ada pembayaran tunai lama tanpa shift pada periode ini. Minta Pemilik merekonsiliasi data sebelum menutup shift.']);
-   $cash=$s->payments()->where('method','cash')->where('status','paid')->sum('amount');
+   $cash=$s->paidCashPayments()->sum('amount');
    $expected=round((float)$s->opening_cash+(float)$cash,2);
    $s->update(['closing_cash'=>$data['closing_cash'],'expected_cash'=>$expected,'difference'=>round((float)$data['closing_cash']-$expected,2),'status'=>'submitted','closed_at'=>now(),'notes'=>$data['notes']??null]);
    AuditLog::create(['business_id'=>$s->business_id,'user_id'=>$request->user()->id,'action'=>'shift.closed','subject_type'=>'cash_shift','subject_id'=>$s->id,'details'=>['branch_id'=>$s->branch_id,'expected_cash'=>$s->expected_cash,'closing_cash'=>$s->closing_cash,'difference'=>$s->difference]]);

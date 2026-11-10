@@ -1,6 +1,6 @@
 # Status proyek Laundryku
 
-Diperbarui: 2026-11-10. Redesign UI/UX Tahap C.
+Diperbarui: 2026-11-10. Penyempurnaan minimum berat dan kas shift aktif.
 
 ## Fitur yang sudah dikerjakan
 - Login dan hak akses Pemilik/Kasir, pemisahan usaha dan cabang.
@@ -66,7 +66,7 @@ Diperbarui: 2026-11-10. Redesign UI/UX Tahap C.
 ## Prioritas berikutnya
 - Review PR Tahap C dan lakukan UAT tanpa merge otomatis. Build aset melalui npm ci dan npm run build; tidak ada perubahan database untuk Tahap C.
 - Tahap C diimplementasikan pada bagian berikut; lanjutkan pemeriksaan pembaca layar, perangkat fisik dan pengujian pengguna.
-- PR data/controller terpisah untuk keputusan minimum berat dan penyediaan rincian kas masuk langsung; jangan mencampur perubahan aturan bisnis ke PR desain.
+- Penyempurnaan minimum berat informatif dan ringkasan kas aktif diimplementasikan pada PR khusus berikut; lanjutkan review dan Black Box manual, tanpa minimum charge atau hitung ulang transaksi lama.
 - Pengujian manual TA tetap mengikuti BLACKBOX_TEST_PLAN.md; screenshot dan tes otomatis bukan bukti seluruh skenario manual.
 
 ## Sinkronisasi
@@ -97,3 +97,15 @@ Diperbarui: 2026-11-10. Redesign UI/UX Tahap C.
 - 42 screenshot: 18 sebelum dan 24 sesudah, pada desktop/mobile, data sintetis dari database pengujian. Laporan, skrip browser dan hasil mesin tersedia di docs/uiux/stage-c/README.md.
 - Tidak mengubah app/controller/model/middleware/service/route, validasi server, migration/seeder, DB utama, logika/otorisasi/cabang/perhitungan, atau nota thermal. Tidak menjalankan migrasi manual.
 - Batasan: belum UAT/pembaca layar/browser lain/printer/perangkat fisik; axe bukan sertifikasi menyeluruh. Riwayat mutasi stok individual tidak disediakan controller sehingga tidak dibuat di UI; rincian agregat yang tersedia tetap pada laporan operasional. Minimum_weight dan rincian kas masuk aktif tetap tindak lanjut terpisah. Berikutnya review PR dan Black Box manual sesuai BLACKBOX_TEST_PLAN.
+
+## Penyempurnaan sebelum Black Box
+- Branch `feat/pre-blackbox-refinements` dari main `41f47f0`, setelah PR #6. Membaca AGENTS, SPEC_PRE_BLACKBOX_FIXES, PROGRESS dan BLACKBOX_TEST_PLAN.
+- Pilihan layanan kg menampilkan minimum_weight dan aturan berat asli. Baris/ringkasan pesanan memberi informasi non-blocking di bawah minimum; quantity tidak diubah. Unit item tidak memakai minimum kg. Harga/validasi OrderController tetap: 0,5 × 8000 = 4000; 2,5 × 8000 = 20000; gabungan 0,5 kg + 2 barang bertarif15000 = 34000.
+- Minimum historis belum disnapshot pada item; detail/nota tetap memakai quantity/unit_price/subtotal lama, tanpa menempelkan minimum konfigurasi terkini pada transaksi historis. Tidak mengubah nota atau menambah migrasi snapshot.
+- Shift OPEN menampilkan agregat server tunai paid terhubung, jumlah pembayaran dan saldo awal + penerimaan terhubung. Label jelas sementara saat muat halaman; selisih belum dihitung sebelum uang fisik/penutupan. Pemilik melihat ringkasan open sesuai konteks, Kasir hanya shift miliknya termasuk riwayat dan tidak melihat shift penugasan cabang sebelumnya.
+- Helper CashShift `paidCashPayments` dan `unreviewedHistoricalCash` menyatukan query display/close dengan kriteria baseline yang sama. Close tetap mengunci shift sebelum memeriksa historis/menghitung sum; rumus round, audit, urutan transaksi dan review tidak diubah. GET tidak menyimpan expected_cash/difference atau mengagregasi ulang shift final.
+- Tunai tanpa shift tidak dihitung. Historis relevan yang belum ditinjau memberi peringatan menuju proses Pemilik; unallocated tetap tidak masuk kas dan assignment eksplisit hanya masuk shift tujuan sekali. Transfer/QRIS, pending/rejected dan ID shift lain dikecualikan.
+- File: CashShiftController/CashShift, service-row/create order/order-composer.js, shifts/index/app.css, PreBlackboxRefinementsTest/StageBPresentationTest, BLACKBOX_TEST_PLAN, docs/pre-blackbox. Tidak mengubah schema/migration/seeder, transaksi utama, payment logic, atau konteks cabang aktif.
+- Validasi: npm ci/build, view:cache, diff --check berhasil; **82 tes / 809 assertion lulus** di laundryku_testing. Delapan tes fitur baru mencakup berat, mixed units, snapshot, live cash/metode/status/ID shift/cabang/usaha, overlap, saldo final -2000, review, rekonsiliasi dan scope penugasan lama. Close diuji memasukkan penerimaan baru setelah halaman dibuka.
+- Browser Chromium desktop1280/mobile375: 8 kondisi axe tanpa pelanggaran, nol overflow/error JS; submit berat0,5 menghasilkan4000, gabungan34000, saldo aktif140000 dan warning historis benar, Pemilik All/Cabang Selatan tetap scoped. Empat screenshot sintetis, skrip dan hasil ada di docs/pre-blackbox.
+- BB-41–BB-52 ditambahkan, semuanya **Belum diuji manual**. Database utama tidak diakses; tidak menjalankan migrasi manual. Berikutnya review PR dan Black Box oleh pengguna laundry. Ringkasan bukan real-time (muat ulang diperlukan); belum uji pembaca layar/perangkat/printer fisik atau konkurensi multiproses. Jangan merge otomatis.

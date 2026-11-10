@@ -62,6 +62,32 @@ Tetap gunakan data sintetis pada database pengujian. Tambahkan usaha kedua, shif
 | BB-39 | Otorisasi | Akun nonaktif | Kirim keputusan/retry setelah akun/usaha/cabang dinonaktifkan | Operasi ditolak tanpa perubahan data | Belum diuji manual | Belum diuji manual |
 | BB-40 | Rekonsiliasi | Pemilik | Tandai belum teralokasi, lalu dengan bukti baru alokasikan ke shift valid yang masih terbuka | Dua keputusan tercatat, alasan awal tetap ada, kas dihitung sekali | Belum diuji manual | Belum diuji manual |
 
+## Tambahan skenario penyempurnaan sebelum Black Box (2026-11-10)
+
+Gunakan hanya fixture sintetis pada laundryku_testing: layanan kg tarif 8000 dengan minimum 2 kg, layanan item 15000, saldo awal shift 100000, dua penerimaan cash/paid terhubung 25000 dan 15000, shift beberapa Kasir/cabang/usaha, serta tunai historis tanpa shift. Minimum adalah informasi, bukan minimum charge. Semua hasil manual di bawah tetap belum diuji.
+
+| ID | Modul | Peran | Langkah / data uji | Hasil yang diharapkan | Hasil aktual | Status |
+|---|---|---|---|---|---|---|
+| BB-41 | Minimum berat | Kasir | Pilih kg minimum 2, isi berat 0,5 pada tarif 8000 | Pilihan layanan/ringkasan menampilkan minimum dan pesan non-blocking; pesanan boleh disimpan, berat tetap 0,5, total resmi Rp4000 | Belum diuji manual | Belum diuji manual |
+| BB-42 | Minimum berat | Kasir | Isi berat 2,5 kg dengan layanan sama | Total resmi Rp20000, tidak dibulatkan; informasi minimum tetap terlihat | Belum diuji manual | Belum diuji manual |
+| BB-43 | Multi-layanan | Kasir | Gabungkan 0,5 kg × 8000 dan 2 barang × 15000 | Total resmi Rp34000; minimum kg tidak diterapkan pada barang | Belum diuji manual | Belum diuji manual |
+| BB-44 | Validasi jumlah | Kasir | Coba item 1,5; kg 0,555; lalu ganti layanan kg ke item | Pecahan item dan kg lebih dari dua desimal ditolak; pilihan item tidak menampilkan minimum kg; jumlah tidak diganti otomatis menjadi minimum | Belum diuji manual | Belum diuji manual |
+| BB-45 | Histori pesanan | Pemilik/Kasir | Setelah pesanan dibuat, ubah tarif/minimum layanan, buka detail/nota lama 58/80mm | Berat/harga snapshot/total lama tidak berubah; minimum konfigurasi sekarang tidak ditampilkan sebagai minimum historis | Belum diuji manual | Belum diuji manual |
+| BB-46 | Shift aktif | Kasir | Buka dengan 100000; bayar cash/paid terhubung 25000 dan 15000, muat ulang shift | Tunai lunas terhubung Rp40000, 2 pembayaran, saldo seharusnya saat ini Rp140000; jelas sementara; belum ada selisih kas palsu | Belum diuji manual | Belum diuji manual |
+| BB-47 | Pengecualian kas | Kasir/Pemilik | Tambah transfer/QRIS 30000, pending/rejected, pembayaran shift lain/cabang lain/usaha lain | Ringkasan shift tujuan tetap Rp40000/Rp140000; data antar Kasir/cabang/usaha tidak tercampur | Belum diuji manual | Belum diuji manual |
+| BB-48 | Tunai historis | Kasir/Pemilik | Tambah cash/paid tanpa shift dalam periode/cabang shift, belum ditinjau; coba tutup | Uang tidak masuk ringkasan, peringatan meminta proses Pemilik; penutupan tetap diblokir, tidak ada atribusi otomatis | Belum diuji manual | Belum diuji manual |
+| BB-49 | Rekonsiliasi & kas | Pemilik/Kasir | Tandai historis unallocated, lalu alokasikan ke satu shift dengan bukti baru yang valid | Unallocated tidak dihitung dan peringatan belum ditinjau hilang; pengaitan valid kemudian menambah shift tujuan sekali, tidak ke shift tumpang tindih lain | Belum diuji manual | Belum diuji manual |
+| BB-50 | Saldo final | Kasir/Pemilik | Saldo awal 100000 + linked cash/paid 40000, tutup dengan 138000 lalu review | expected_cash final Rp140000, difference -Rp2000, review tidak menghitung ulang; ringkasan sementara diganti angka final | Belum diuji manual | Belum diuji manual |
+| BB-51 | Saldo saat muat | Kasir | Buka halaman shift, terima pembayaran baru, muat ulang; tutup tanpa memakai angka lama di halaman | Tampilan baru mengikuti pembayaran terbaru; close selalu menghitung ulang setelah lock, tidak mempercayai saldo dari klien | Belum diuji manual | Belum diuji manual |
+| BB-52 | Peran/cabang & mobile | Dua Kasir/Pemilik | Buka shift sendiri/akun lain, Pemilik Semua Cabang lalu pilih A/B; ulangi pada ponsel | Kasir hanya melihat shift miliknya; Pemilik mengikuti cabang aktif, Semua Cabang tetap gabungan; label saldo/minimum terbaca dengan keyboard/mobile | Belum diuji manual | Belum diuji manual |
+
+## Hasil otomatis penyempurnaan 2026-11-10 (bukan hasil manual)
+
+- `php artisan test --compact`: **82 lulus, 809 assertion**, hanya laundryku_testing (PHP 8.5.12/MariaDB 11). Delapan PreBlackboxRefinementsTest baru; tes presentasi shift lama diperbarui untuk informasi kas yang kini tersedia. Suite finansial/rekonsiliasi/cabang lama tetap dijalankan.
+- npm ci, npm run build, php artisan view:cache dan git diff --check berhasil.
+- Browser Chromium 1280/375px: berat di bawah minimum non-blocking, total resmi 4000 dan gabungan 34000, item bulat, ringkasan cash40000/expected140000, peringatan historis, serta Pemilik Semua/Cabang Selatan diperiksa. Delapan audit axe tanpa pelanggaran; nol overflow root/error JS. Empat screenshot data sintetis dan hasil mesin tersedia di docs/pre-blackbox.
+- Ini pengujian otomatis dengan fixture, bukan pengujian manual oleh pengguna laundry; BB-01 sampai BB-52 tetap menunggu pengisian hasil manual aktual.
+
 ## Hasil pengujian otomatis 2026-11-09
 
 Pengujian berikut benar-benar dijalankan pada branch `feat/reconciliation-payment-retry`; berbeda dari hasil manual pada matriks di atas.

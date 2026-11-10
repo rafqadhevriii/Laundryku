@@ -25,6 +25,9 @@ if (form) {
             quantity.min = perItem ? '1' : '0.01';
             row.querySelector('[data-quantity-label]').textContent = option?.value ? (perItem ? 'Jumlah barang' : 'Berat (kg)') : 'Berat / jumlah';
             row.querySelector('[data-quantity-hint]').textContent = perItem ? 'Gunakan jumlah bulat, minimal satu barang.' : 'Masukkan berat dalam kg, hingga dua angka desimal.';
+            const minimumInfo = row.querySelector('[data-minimum-info]');
+            minimumInfo.hidden = true;
+            minimumInfo.textContent = '';
             if (!option?.value) {
                 row.querySelector('[data-service-info]').textContent = 'Pilih layanan untuk melihat tarif dan durasinya.';
                 continue;
@@ -39,6 +42,17 @@ if (form) {
             const details = document.createElement('span');
             details.textContent = `${quantity.value || '—'} ${option.dataset.unit} · tarif ${tariff}`;
             entry.append(name, details);
+            const minimum = Number(option.dataset.minimum);
+            if (!perItem && Number.isFinite(minimum) && minimum > 0) {
+                const label = minimum.toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                const below = quantity.value !== '' && Number(quantity.value) > 0 && Number(quantity.value) < minimum;
+                const message = `Minimum berat layanan: ${label} kg. ${below ? 'Berat di bawah minimum tetap boleh. ' : ''}Tagihan memakai berat asli, bukan minimum yang dibulatkan.`;
+                minimumInfo.hidden = false;
+                minimumInfo.textContent = message;
+                const note = document.createElement('span');
+                note.textContent = message;
+                entry.append(note);
+            }
             list.append(entry);
         }
         if (!list.children.length) {

@@ -1,0 +1,63 @@
+{
+  "results": [
+    {
+      "key": "below-minimum",
+      "width": 1280,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "mixed-actual-weight",
+      "width": 1280,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "active-shift",
+      "width": 1280,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "below-minimum",
+      "width": 375,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "mixed-actual-weight",
+      "width": 375,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "active-shift",
+      "width": 375,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "owner-all-shifts",
+      "width": 1280,
+      "violations": [],
+      "overflow": false
+    },
+    {
+      "key": "owner-south-shifts",
+      "width": 1280,
+      "violations": [],
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "0.5kg -> 4000 server total",
+    "mixed 0.5kg plus 2 items ->34000",
+    "below-minimum nonblocking and summary",
+    "item integer and no kg minimum",
+    "linked cash 40000 and current expected140000",
+    "historical warning not counted",
+    "owner All and selected-branch scope"
+  ],
+  "passed": true
+}

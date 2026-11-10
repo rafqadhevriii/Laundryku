@@ -58,7 +58,7 @@ class StageBPresentationTest extends TestCase {
   $this->assertFalse(collect($queries)->contains(fn($sql)=>str_contains(strtolower($sql),'sum(')));
   $this->actingAs($this->cashier)->get(route('shifts.index'))->assertOk()->assertDontSee('Tinjau Selesai');
   $this->makeShift();
-  $this->get(route('shifts.index'))->assertOk()->assertSee('Rincian belum tersedia')->assertSee('Dihitung saat penutupan');
+  $this->get(route('shifts.index'))->assertOk()->assertSee('Tunai lunas terhubung')->assertSee('Saldo seharusnya saat ini')->assertSee('Sementara, bukan saldo final penutupan');
  }
  public function test_cancelled_order_has_no_new_payment_or_next_status_action():void {
   $order=$this->makeOrder();$order->update(['status'=>'cancelled']);
