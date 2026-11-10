@@ -1,0 +1,607 @@
+{
+  "results": [
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "customers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "inventory",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "expenses",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "services",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "cashiers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "revenue",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "operational",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "reconciliation",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "audit",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "serviceForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "page": "customers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "page": "inventory",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "page": "expenses",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 1280,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "customers",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "inventory",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "expenses",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "services",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "cashiers",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "revenue",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "operational",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "reconciliation",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "audit",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 768,
+      "page": "serviceForm",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "page": "customers",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "page": "inventory",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "page": "expenses",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 768,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": false,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "customers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "inventory",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "expenses",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "services",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "cashiers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "revenue",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "operational",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "reconciliation",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "audit",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "serviceForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "customers",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "inventory",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "expenses",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "customerForm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "customers-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "inventory-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "expenses-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "services-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "cashiers-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "revenue-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "operational-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "reconciliation-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "audit-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "customerForm-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 375,
+      "page": "serviceForm-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "customers-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "inventory-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "expenses-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "cashier",
+      "width": 375,
+      "page": "customerForm-empty-business",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "inventory-empty",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "expenses-empty",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "customers-empty",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "customer-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "service-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "cashier-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "expense-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "inventory-create-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "inventory-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "reconciliation-confirm",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "reconciliation-invalid",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "reconciliation-history",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "role": "owner",
+      "width": 1280,
+      "page": "audit-expanded",
+      "overflow": false,
+      "axe": true,
+      "violations": []
+    },
+    {
+      "interactionChecks": [
+        "All creation gate",
+        "South empty state",
+        "customer/service/cashier/expense/stock server validation",
+        "old input isolated",
+        "password blank",
+        "review cancel and accept exactly one POST",
+        "reconciliation required shift and history",
+        "selected and All branch exports",
+        "cashier owner routes 403"
+      ],
+      "passed": true
+    },
+    {
+      "keyboardTableScroll": true,
+      "passed": true
+    }
+  ],
+  "errors": []
+}

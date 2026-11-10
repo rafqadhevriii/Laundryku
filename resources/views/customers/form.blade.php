@@ -1,17 +1,20 @@
 @extends('layouts.app')
 @section('title',$customer->exists?'Ubah Pelanggan':'Tambah Pelanggan')
 @section('content')
-@if(!$customer->exists && $activeBranchId===null)
-<x-ui.branch-required/>
+<div class="module-stack">
+<x-ui.section-header title="Informasi pelanggan" description="Isi nama dan kontak yang mudah dihubungi. Catatan membantu kasir mengenali kebutuhan khusus."/>
+<x-ui.form-feedback/>
+@if(!$customer->exists && $activeBranchId===null)<x-ui.branch-required/>
 @else
-<div class="card" style="max-width:650px"><form method="POST" action="{{ $customer->exists?route('customers.update',$customer->id):route('customers.store') }}">@csrf
+<section class="card module-form-card"><p class="context-chip"><x-ui.icon name="building"/>Cabang: {{ $customer->exists?$customer->branch?->name:$activeBranchLabel }}</p>
+<form method="POST" action="{{ $customer->exists?route('customers.update',$customer->id):route('customers.store') }}" class="module-form">@csrf
 @if($customer->exists)@method('PUT')@endif
-<label for="name">Nama pelanggan</label><input id="name" name="name" required value="{{ old('name',$customer->name) }}">
-<label for="phone">Nomor WhatsApp / telepon</label><input id="phone" name="phone" value="{{ old('phone',$customer->phone) }}" placeholder="Contoh: 081234567890">
-<p class="context-chip"><x-ui.icon name="building"/>Cabang: {{ $customer->exists?$customer->branch?->name:$activeBranchLabel }}</p>
-<label for="address">Alamat</label><input id="address" name="address" value="{{ old('address',$customer->address) }}">
-<label for="notes">Catatan khusus</label><textarea id="notes" name="notes" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px">{{ old('notes',$customer->notes) }}</textarea>
-@if($errors->any())<div class="error" style="margin-top:14px">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
-<div style="display:flex;gap:10px;margin-top:20px"><button>Simpan</button><a href="{{ route('customers.index') }}" class="nav">Batal</a></div></form></div>
+<x-ui.form-control name="name" label="Nama pelanggan (wajib)" :value="$customer->name" required maxlength="150" autocomplete="name"/>
+<x-ui.form-control name="phone" label="Nomor WhatsApp / telepon" type="tel" :value="$customer->phone" maxlength="20" autocomplete="tel" hint="Opsional. Contoh: 081234567890."/>
+<x-ui.form-control name="address" label="Alamat" type="textarea" :value="$customer->address" rows="3" maxlength="2000" autocomplete="street-address"/>
+<x-ui.form-control name="notes" label="Catatan khusus" type="textarea" :value="$customer->notes" rows="3" maxlength="2000" hint="Opsional. Tuliskan kebutuhan penanganan atau preferensi pelanggan."/>
+<div class="form-actions"><x-ui.button icon="check">Simpan</x-ui.button><x-ui.button variant="ghost" :href="route('customers.index')">Batal</x-ui.button></div>
+</form></section>
 @endif
+</div>
 @endsection

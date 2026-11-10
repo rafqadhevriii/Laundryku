@@ -1,6 +1,6 @@
 # Status proyek Laundryku
 
-Diperbarui: 2026-11-09. Sistem konteks cabang aktif.
+Diperbarui: 2026-11-10. Redesign UI/UX Tahap C.
 
 ## Fitur yang sudah dikerjakan
 - Login dan hak akses Pemilik/Kasir, pemisahan usaha dan cabang.
@@ -48,7 +48,7 @@ Diperbarui: 2026-11-09. Sistem konteks cabang aktif.
 - Tidak mengubah controller, route, model, middleware, validasi, database/migration/seeder, isolasi usaha/cabang, atau perhitungan keuangan.
 - Batas data untuk PR lanjutan: minimum_weight tersimpan belum diterapkan OrderController; kas masuk langsung belum disediakan controller halaman shift. Tidak menambah aturan minimum, agregasi/query view atau angka nol fiktif. UI shift menyatakan rincian belum tersedia sampai informasi penutupan tersedia. Rincian di docs/uiux/stage-b/README.md.
 
-## Verifikasi terakhir
+## Verifikasi Tahap B (historis)
 - npm ci dan npm run build berhasil (Vite 7.3.7, CSS 63,47 kB / gzip 14,91 kB; JS 67,28 kB / gzip 24,85 kB).
 - `php artisan test`: **58 tes lulus, 517 assertions**, PHP 8.5.12/MariaDB 11 pada laundryku_testing terisolasi. Tujuh StageBPresentationTest ditambahkan; seluruh regresi lama tetap dijalankan.
 - `php artisan view:cache` dan `git diff --check`: berhasil.
@@ -64,8 +64,8 @@ Diperbarui: 2026-11-09. Sistem konteks cabang aktif.
 - File utama: PaymentReconciliationController, PaymentController, CashShiftController, OrderController, Payment/PaymentAttempt, routes/web.php, view rekonsiliasi/detail pesanan/layout, migrasi tambahan, tests/Feature, tests/Support/PaymentFixtures, phpunit.xml, dan tests/TestCase.php.
 
 ## Prioritas berikutnya
-- Review PR Tahap B tanpa merge otomatis. Build aset melalui npm ci dan npm run build; tidak ada perubahan database untuk Tahap B.
-- Tahap C: modul lain (stok/pelanggan/layanan/kasir/pengeluaran/laporan/audit), konsistensi form/tabel, pemeriksaan aksesibilitas menyeluruh dan pengujian pengguna.
+- Review PR Tahap C dan lakukan UAT tanpa merge otomatis. Build aset melalui npm ci dan npm run build; tidak ada perubahan database untuk Tahap C.
+- Tahap C diimplementasikan pada bagian berikut; lanjutkan pemeriksaan pembaca layar, perangkat fisik dan pengujian pengguna.
 - PR data/controller terpisah untuk keputusan minimum berat dan penyediaan rincian kas masuk langsung; jangan mencampur perubahan aturan bisnis ke PR desain.
 - Pengujian manual TA tetap mengikuti BLACKBOX_TEST_PLAN.md; screenshot dan tes otomatis bukan bukti seluruh skenario manual.
 
@@ -83,3 +83,17 @@ Diperbarui: 2026-11-09. Sistem konteks cabang aktif.
 - Hasil akhir: **69 tes / 671 assertion lulus**, database terisolasi `laundryku_testing`; Vite build, view:cache dan diff --check berhasil. Browser Chromium desktop 1440×1000/mobile 390×844: 10 screenshot, CSRF 419 tanpa token, navigasi/keyboard/pemisahan peran berhasil, nol error JS/overflow horizontal. Axe WCAG 2.x A/AA tidak menemukan pelanggaran pada 10 tampilan teruji.
 - Tidak mengubah migration/model/skema, tidak menjalankan migrasi manual, dan tidak mengakses database utama. Perhitungan pembayaran/shift tidak diubah; tes snapshot memastikan nilai historis tetap sama.
 - Batasan: halaman administrasi usaha (layanan/akun Kasir/audit umum) tetap lingkup usaha; bukan data operasional per cabang. Mode Semua Cabang tetap dapat menindak record historis tertentu sesuai izin Pemilik lama. Belum uji pembaca layar/perangkat fisik atau konkurensi beberapa tab; konteks berbagi dalam satu sesi browser. Berikutnya review PR dan UAT, tanpa merge otomatis.
+
+## UI/UX Tahap C — administrasi & laporan
+- Branch `feat/uiux-stage-c` dari main `895a31b` (spesifikasi Tahap C, setelah konteks cabang aktif). Membaca AGENTS, UIUX_STAGE_C_SPEC, UIUX_REDESIGN_SPEC, PROGRESS dan CHANGELOG sebelum implementasi.
+- Pelanggan: pencarian/pagination, kontak, form tambah/edit dengan catatan, error terasosiasi dan old input; cabang tetap read-only. Pengeluaran: form kategori/tanggal/nominal dan daftar responsif dengan konteks cabang. Gate Semua Cabang dipertahankan.
+- Stok: KPI dari paginator/collection/pending yang sudah disediakan controller, ringkasan menipis **khusus halaman tampil** diberi label eksplisit; kartu barang dengan jumlah/satuan/status dan details mutasi. Pengajuan koreksi tetap menunggu Pemilik; review memakai dialog konfirmasi yang mempertahankan tombol keputusan.
+- Layanan/harga dan akun Kasir: hierarki form/tabel, status aktif/nonaktif, persyaratan dan validasi; password tidak direpopulasi. Penugasan cabang akun tetap form konfigurasi Pemilik, terpisah dari cabang kerja.
+- Pendapatan/operasional: filter periode/cabang reusable, KPI dari data nyata, catatan basis tanggal, ekspor CSV/PDF/Excel melalui route lama, tabel geser berlabel. Rekonsiliasi: ringkasan, panduan, bukti/alasan wajib, shift tanpa pilihan otomatis, konfirmasi, old input per pembayaran dan histori tetap. Audit: detail JSON escaped melalui disclosure, tidak mengubah data audit.
+- Komponen baru form-control/data-table/report-filter/workspace-context memakai tokens A dan KPI/status/empty/pagination/confirmation B. CSS terpusat, ikon inline orisinal, label region tabel dari caption melalui JS Vite. Tidak ada dependensi/CDN produksi baru.
+- File: view customers/inventory/expenses/services/owner.cashiers/reports/payments.reconciliation/audit, komponen UI dan icon/status, app.css/app.js, StageCPresentationTest, serta docs/uiux/stage-c.
+- Verifikasi akhir: npm ci/build berhasil; **74 tes / 740 assertion lulus** pada laundryku_testing (PHP 8.5.12/MariaDB 11), view:cache dan diff --check berhasil. Lima tes tambahan memastikan pagination, validasi/old input per form, password tidak ditampilkan, kondisi kosong dan otorisasi; suite finansial/cabang lama tetap dijalankan.
+- Browser Chromium: 73 kondisi pada 375/768/1280px, termasuk Pemilik/Kasir, kosong/terisi/validasi, konfirmasi cancel/accept (satu POST), rekonsiliasi/histori, 403 menu Pemilik dan ekspor dengan konteks/legacy filter. Nol overflow root dan error JS; axe pada 58 kondisi, nol pelanggaran WCAG A/AA/2.1/2.2 yang diuji. Tabel geser diuji dengan keyboard. Satu overflow audit mobile ditemukan dan diperbaiki sebelum pengujian final.
+- 42 screenshot: 18 sebelum dan 24 sesudah, pada desktop/mobile, data sintetis dari database pengujian. Laporan, skrip browser dan hasil mesin tersedia di docs/uiux/stage-c/README.md.
+- Tidak mengubah app/controller/model/middleware/service/route, validasi server, migration/seeder, DB utama, logika/otorisasi/cabang/perhitungan, atau nota thermal. Tidak menjalankan migrasi manual.
+- Batasan: belum UAT/pembaca layar/browser lain/printer/perangkat fisik; axe bukan sertifikasi menyeluruh. Riwayat mutasi stok individual tidak disediakan controller sehingga tidak dibuat di UI; rincian agregat yang tersedia tetap pada laporan operasional. Minimum_weight dan rincian kas masuk aktif tetap tindak lanjut terpisah. Berikutnya review PR dan Black Box manual sesuai BLACKBOX_TEST_PLAN.
