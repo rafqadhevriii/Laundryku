@@ -1,15 +1,21 @@
 @extends('layouts.app')
 @section('title',$service->exists?'Ubah Layanan':'Tambah Layanan')
 @section('content')
-<div class="card" style="max-width:650px"><form method="POST" action="{{ $service->exists?route('owner.services.update',$service->id):route('owner.services.store') }}">@csrf
+<div class="module-stack">
+<x-ui.section-header title="Rincian layanan & tarif" description="Gunakan nama yang mudah dikenali kasir. Harga tersimpan pada pesanan yang sudah dibuat tetap dipertahankan."/>
+<x-ui.workspace-context :business-wide="true"/>
+<x-ui.form-feedback/>
+<section class="card module-form-card"><form method="POST" action="{{ $service->exists?route('owner.services.update',$service->id):route('owner.services.store') }}" class="module-form">@csrf
 @if($service->exists)@method('PUT')@endif
-<label for="name">Nama layanan</label><input id="name" name="name" value="{{ old('name',$service->name) }}" required placeholder="Contoh: Cuci Setrika Reguler">
-<label for="unit">Satuan perhitungan</label><select id="unit" name="unit" required><option value="kg" @selected(old('unit',$service->unit)==='kg')>Per kilogram</option><option value="item" @selected(old('unit',$service->unit)==='item')>Per barang</option></select>
-<label for="price">Harga per satuan (Rp)</label><input id="price" name="price" type="number" min="0" step="0.01" value="{{ old('price',$service->price) }}" required>
-<label for="minimum_weight">Minimum berat (kg), opsional</label><input id="minimum_weight" name="minimum_weight" type="number" min="0.01" step="0.01" value="{{ old('minimum_weight',$service->minimum_weight) }}"><p class="muted" style="font-size:13px">Untuk layanan kilogram. Jika berat kurang dari minimum, tagihan tetap berdasarkan berat asli.</p>
-<label for="estimated_hours">Estimasi pengerjaan (jam)</label><input id="estimated_hours" name="estimated_hours" type="number" min="1" value="{{ old('estimated_hours',$service->estimated_hours??48) }}" required>
-<label for="description">Keterangan</label><textarea id="description" name="description" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px">{{ old('description',$service->description) }}</textarea>
-<label for="is_active">Status layanan</label><select id="is_active" name="is_active"><option value="1" @selected(old('is_active',$service->exists?(int)$service->is_active:1)==1)>Aktif</option><option value="0" @selected(old('is_active',$service->exists?(int)$service->is_active:1)==0)>Nonaktif</option></select>
-@if($errors->any())<div class="error" style="margin-top:14px">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
-<div style="display:flex;gap:10px;margin-top:20px"><button>Simpan</button><a class="nav" href="{{ route('owner.services.index') }}">Batal</a></div></form></div>
+<x-ui.form-control name="name" label="Nama layanan (wajib)" :value="$service->name" required maxlength="150" placeholder="Contoh: Cuci Setrika Reguler"/>
+<div class="module-form-grid">
+<x-ui.select name="unit" label="Satuan perhitungan (wajib)" required><option value="kg" @selected(old('unit',$service->unit)==='kg')>Per kilogram</option><option value="item" @selected(old('unit',$service->unit)==='item')>Per barang</option></x-ui.select>
+<x-ui.form-control name="price" label="Harga per satuan (Rp, wajib)" type="number" :value="$service->price" min="0" step="0.01" required inputmode="decimal"/>
+<x-ui.form-control name="minimum_weight" label="Minimum berat (kg, opsional)" type="number" :value="$service->minimum_weight" min="0.01" step="0.01" hint="Untuk layanan kilogram. Jika berat kurang dari minimum, tagihan tetap berdasarkan berat asli."/>
+<x-ui.form-control name="estimated_hours" label="Estimasi pengerjaan (jam, wajib)" type="number" :value="$service->estimated_hours??48" min="1" required/>
+</div>
+<x-ui.form-control name="description" label="Keterangan" type="textarea" :value="$service->description" rows="3" maxlength="2000"/>
+<x-ui.select name="is_active" label="Status layanan" hint="Layanan nonaktif tidak tersedia untuk pesanan baru."><option value="1" @selected(old('is_active',$service->exists?(int)$service->is_active:1)==1)>Aktif</option><option value="0" @selected(old('is_active',$service->exists?(int)$service->is_active:1)==0)>Nonaktif</option></x-ui.select>
+<div class="form-actions"><x-ui.button icon="check">Simpan</x-ui.button><x-ui.button variant="ghost" :href="route('owner.services.index')">Batal</x-ui.button></div>
+</form></section></div>
 @endsection

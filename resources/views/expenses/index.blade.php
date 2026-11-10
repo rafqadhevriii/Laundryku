@@ -1,20 +1,29 @@
 @extends('layouts.app')
 @section('title','Pengeluaran Operasional')
 @section('content')
-<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+<div class="module-stack">
+<x-ui.section-header title="Catat biaya operasional" description="Simpan kategori, tanggal, dan nominal agar pengeluaran setiap cabang mudah ditelusuri."/>
+<x-ui.workspace-context/>
+<x-ui.form-feedback/>
+<div class="module-split">
 @if($activeBranchId===null)<x-ui.branch-required/>
 @else
-<div class="card"><h2>Catat pengeluaran</h2><form method="POST" action="{{ route('expenses.store') }}">@csrf
-<p class="context-chip">Cabang aktif: {{ $activeBranchLabel }}</p>
-<label for="category">Kategori</label><select id="category" name="category" required>@foreach(['Listrik dan air','Deterjen dan bahan pencuci','Perawatan mesin','Sewa tempat','Operasional lain'] as $category)<option value="{{ $category }}" @selected(old('category')===$category)>{{ $category }}</option>@endforeach</select>
-<label for="description">Keterangan</label><input id="description" name="description" maxlength="255" required value="{{ old('description') }}">
-<label for="amount">Nominal (Rp)</label><input id="amount" name="amount" type="number" step="0.01" min="0.01" required value="{{ old('amount') }}">
-<label for="expense_date">Tanggal</label><input id="expense_date" name="expense_date" type="date" required value="{{ old('expense_date',now()->format('Y-m-d')) }}">
-@if($errors->any())<div class="error">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
-<button style="margin-top:18px">Simpan Pengeluaran</button></form></div>
+<section class="card"><h2>Catat pengeluaran</h2><p class="context-chip">Cabang aktif: {{ $activeBranchLabel }}</p>
+<form method="POST" action="{{ route('expenses.store') }}" class="module-form">@csrf
+<x-ui.select name="category" label="Kategori (wajib)" required>@foreach(['Listrik dan air','Deterjen dan bahan pencuci','Perawatan mesin','Sewa tempat','Operasional lain'] as $category)<option value="{{ $category }}" @selected(old('category')===$category)>{{ $category }}</option>@endforeach</x-ui.select>
+<x-ui.form-control name="description" label="Keterangan (wajib)" maxlength="255" required hint="Contoh: pembelian kemasan atau tagihan listrik."/>
+<x-ui.form-control name="amount" label="Nominal (Rp, wajib)" type="number" step="0.01" min="0.01" required inputmode="decimal"/>
+<x-ui.form-control name="expense_date" label="Tanggal (wajib)" type="date" :value="now()->format('Y-m-d')" required/>
+<div class="form-actions"><x-ui.button icon="check">Simpan Pengeluaran</x-ui.button></div>
+</form></section>
 @endif
-<div class="card"><h2>Daftar pengeluaran</h2><div style="overflow:auto"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr></thead><tbody>
-@forelse($expenses as $expense)<tr><td>{{ $expense->expense_date->format('d/m/Y') }}</td><td>{{ $expense->branch?->name }}</td><td>{{ $expense->category }}</td><td>{{ $expense->description }}</td><td>Rp {{ number_format($expense->amount,0,',','.') }}</td></tr>
-@empty<tr><td colspan="5">Belum ada pengeluaran.</td></tr>@endforelse
-</tbody></table></div><div style="margin-top:15px">{{ $expenses->links() }}</div></div></div>
+<section class="card"><x-ui.section-header title="Daftar pengeluaran" :description="$expenses->total().' pengeluaran tercatat · '.$activeBranchLabel"/>
+@if($expenses->isEmpty())<x-ui.empty-state title="Belum ada pengeluaran." description="Pengeluaran yang disimpan akan tampil di sini." icon="wallet"/>
+@else
+<x-ui.data-table label="Daftar pengeluaran operasional"><thead><tr><th scope="col">Tanggal & cabang</th><th scope="col">Kategori & keterangan</th><th scope="col" class="number-cell">Nominal</th></tr></thead><tbody>
+@foreach($expenses as $expense)<tr><td>{{ $expense->expense_date->format('d/m/Y') }}<span class="cell-subtext">{{ $expense->branch?->name }}</span></td><th scope="row">{{ $expense->category }}<span class="cell-subtext">{{ $expense->description }}</span></th><td class="number-cell">Rp {{ number_format($expense->amount,0,',','.') }}</td></tr>@endforeach
+</tbody></x-ui.data-table>
+@endif
+{{ $expenses->links('components.ui.pagination') }}
+</section></div></div>
 @endsection

@@ -102,7 +102,7 @@ for (const table of document.querySelectorAll('.main table')) {
         if (overflows) {
             scroll.setAttribute('tabindex', '0');
             scroll.setAttribute('role', 'region');
-            scroll.setAttribute('aria-label', 'Tabel yang dapat digeser');
+            scroll.setAttribute('aria-label', table.caption?.textContent.trim() || 'Tabel yang dapat digeser');
         } else {
             scroll.removeAttribute('tabindex');
             scroll.removeAttribute('role');

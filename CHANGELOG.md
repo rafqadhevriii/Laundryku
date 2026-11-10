@@ -1,5 +1,15 @@
 # Catatan perubahan Laundryku
 
+## 2026-11-10 (UI/UX Tahap C)
+- Merapikan pelanggan, stok bahan, pengeluaran, layanan/harga, akun Kasir, laporan pendapatan/operasional, rekonsiliasi dan riwayat aktivitas memakai identitas A, komponen B dan konteks cabang aktif.
+- Menambahkan form-control/data-table/report-filter/workspace-context, badge teks stok/persetujuan/aktif/rekonsiliasi, ikon plus/cari/unduh/tag orisinal; CSS/JS lokal Vite. Pagination mempertahankan query dan memakai renderer B.
+- Form memiliki label, bantuan/error terasosiasi, old input, aksi responsif dan empty state. Password tidak direpopulasi; input mutasi/rekonsiliasi hanya kembali pada form sasaran melalui marker UI yang diabaikan controller.
+- Stok memakai kartu jumlah/satuan/status, ringkasan menipis berlabel khusus halaman tampil dan disclosure mutasi. Koreksi tetap memerlukan persetujuan Pemilik; review dan keputusan rekonsiliasi memakai konfirmasi cancel/accept.
+- Laporan memakai periode/cabang, KPI nyata dan ekspor endpoint lama; tidak membuat chart/data/tren baru. Audit menampilkan JSON escaped dalam details. Semua Cabang/gate pembuatan dan administrasi business-wide tetap konsisten.
+- Hasil: npm ci/build, view:cache, diff --check lulus; **74 tes / 740 assertion** pada laundryku_testing. Chromium: 73 kondisi responsif/peran/kosong/terisi/error, 58 audit axe tanpa pelanggaran, nol overflow root/error JS. Alur validasi, konfirmasi tepat satu POST, histori dan ekspor diuji. Overflow audit mobile sudah diperbaiki.
+- Bukti: docs/uiux/stage-c (42 screenshot sebelum/sesudah desktop/mobile, hasil mesin dan skrip). Lima StageCPresentationTest ditambahkan. PROGRESS diperbarui.
+- Controller/route/otorisasi/validasi/rumus/model/database/migration/seeder/nota thermal tidak diubah; DB utama tidak diakses dan migrasi manual tidak dijalankan. Batasan: belum UAT/pembaca layar/perangkat fisik; axe bukan sertifikasi aplikasi. PR terpisah, tanpa merge otomatis.
+
 ## 2026-11-09 (konteks cabang aktif)
 - Menambahkan pengalih cabang Pemilik di header desktop/mobile, mode Semua Cabang dan identitas penugasan Kasir yang read-only.
 - Menambahkan resolver/middleware konteks terpusat, namespace sesi akun/usaha, reset autentikasi, validasi ulang cabang aktif, CSRF dan redirect GET aman. Sesi stale menggagalkan POST mutasi; GET kembali ke agregat dengan peringatan.

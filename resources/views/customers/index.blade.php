@@ -1,9 +1,21 @@
 @extends('layouts.app')
 @section('title','Data Pelanggan')
 @section('content')
-<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><form method="GET" action="{{ route('customers.index') }}" style="display:flex;gap:8px"><input name="search" aria-label="Cari pelanggan" placeholder="Cari nama atau nomor telepon" value="{{ request('search') }}"><button>Cari</button></form><a class="btn" href="{{ route('customers.create') }}">Tambah Pelanggan</a></div>
-<div style="overflow:auto;margin-top:20px"><table><thead><tr><th>Nama</th><th>Telepon</th><th>Cabang</th><th>Alamat</th><th>Aksi</th></tr></thead><tbody>
-@forelse($customers as $customer)<tr><td>{{ $customer->name }}</td><td>{{ $customer->phone??'-' }}</td><td>{{ $customer->branch?->name }}</td><td>{{ $customer->address??'-' }}</td><td><a href="{{ route('customers.edit',$customer->id) }}">Ubah</a></td></tr>
-@empty<tr><td colspan="5" class="muted">Belum ada pelanggan.</td></tr>@endforelse
-</tbody></table></div><div style="margin-top:20px">{{ $customers->links() }}</div></div>
+<div class="module-stack">
+<x-ui.section-header title="Kenali pelanggan Anda" description="Cari kontak pelanggan dan perbarui informasi agar pencatatan pesanan lebih cepat."><x-slot:actions><x-ui.button :href="route('customers.create')" icon="plus">Tambah Pelanggan</x-ui.button></x-slot:actions></x-ui.section-header>
+<x-ui.workspace-context/>
+<section class="card">
+<form method="GET" action="{{ route('customers.index') }}" class="module-search">
+<x-ui.form-control name="search" label="Cari pelanggan" :value="request('search')" placeholder="Nama atau nomor telepon"/>
+<div class="form-actions"><x-ui.button icon="search">Cari</x-ui.button>@if(request()->filled('search'))<x-ui.button variant="ghost" :href="route('customers.index')">Reset</x-ui.button>@endif</div>
+</form>
+<p class="result-count">{{ $customers->total() }} pelanggan sesuai pencarian · {{ $activeBranchLabel }}</p>
+@if($customers->isEmpty())<x-ui.empty-state title="Belum ada pelanggan." description="Coba kata pencarian lain atau tambahkan pelanggan pada cabang aktif." icon="users"/>
+@else
+<x-ui.data-table label="Daftar pelanggan"><thead><tr><th scope="col">Nama & kontak</th><th scope="col">Cabang</th><th scope="col">Alamat</th><th scope="col">Aksi</th></tr></thead><tbody>
+@foreach($customers as $customer)<tr><th scope="row"><strong>{{ $customer->name }}</strong><span class="cell-subtext">{{ $customer->phone??'Telepon belum diisi' }}</span></th><td>{{ $customer->branch?->name }}</td><td>{{ $customer->address??'Alamat belum diisi' }}</td><td><x-ui.button variant="ghost" :href="route('customers.edit',$customer->id)" :aria-label="'Ubah pelanggan '.$customer->name">Ubah</x-ui.button></td></tr>@endforeach
+</tbody></x-ui.data-table>
+@endif
+{{ $customers->links('components.ui.pagination') }}
+</section></div>
 @endsection
