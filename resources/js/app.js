@@ -113,3 +113,36 @@ for (const table of document.querySelectorAll('.main table')) {
     new ResizeObserver(update).observe(scroll);
     update();
 }
+
+/* Account menu supports pointer hover as well as accessible click and keyboard. */
+for (const menu of document.querySelectorAll('[data-profile-menu]')) {
+    const trigger = menu.querySelector('summary');
+    if (!trigger) continue;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    menu.addEventListener('pointerenter', () => {
+        if (finePointer.matches) menu.open = true;
+    });
+    menu.addEventListener('pointerleave', () => {
+        if (finePointer.matches) menu.open = false;
+    });
+    trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (event.detail === 0 || !finePointer.matches) {
+            menu.open = !menu.open;
+        } else {
+            menu.open = true;
+        }
+    });
+    menu.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+            menu.open = false;
+            trigger.focus();
+        }
+    });
+    document.addEventListener('pointerdown', event => {
+        if (!menu.contains(event.target)) menu.open = false;
+    });
+    document.addEventListener('focusin', event => {
+        if (!menu.contains(event.target)) menu.open = false;
+    });
+}
