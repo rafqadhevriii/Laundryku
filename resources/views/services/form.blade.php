@@ -2,8 +2,8 @@
 @section('title',$service->exists?'Ubah Layanan':'Tambah Layanan')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Rincian layanan & tarif" description="Gunakan nama yang mudah dikenali kasir. Harga tersimpan pada pesanan yang sudah dibuat tetap dipertahankan."/>
-<x-ui.workspace-context :business-wide="true"/>
+<x-ui.section-header title="Rincian layanan & tarif"/>
+
 <x-ui.form-feedback/>
 <section class="card module-form-card"><form method="POST" action="{{ $service->exists?route('owner.services.update',$service->id):route('owner.services.store') }}" class="module-form">@csrf
 @if($service->exists)@method('PUT')@endif

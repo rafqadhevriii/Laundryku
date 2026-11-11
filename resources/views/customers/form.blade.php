@@ -2,11 +2,11 @@
 @section('title',$customer->exists?'Ubah Pelanggan':'Tambah Pelanggan')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Informasi pelanggan" description="Isi nama dan kontak yang mudah dihubungi. Catatan membantu kasir mengenali kebutuhan khusus."/>
+<x-ui.section-header title="Informasi pelanggan"/>
 <x-ui.form-feedback/>
 @if(!$customer->exists && $activeBranchId===null)<x-ui.branch-required/>
 @else
-<section class="card module-form-card"><p class="context-chip"><x-ui.icon name="building"/>Cabang: {{ $customer->exists?$customer->branch?->name:$activeBranchLabel }}</p>
+<section class="card module-form-card">
 <form method="POST" action="{{ $customer->exists?route('customers.update',$customer->id):route('customers.store') }}" class="module-form">@csrf
 @if($customer->exists)@method('PUT')@endif
 <x-ui.form-control name="name" label="Nama pelanggan (wajib)" :value="$customer->name" required maxlength="150" autocomplete="name"/>

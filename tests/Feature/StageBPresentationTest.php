@@ -29,7 +29,7 @@ class StageBPresentationTest extends TestCase {
   $service=Service::create(['business_id'=>$this->business->id,'name'=>'Cuci Kering','unit'=>'kg','price'=>8000,'estimated_hours'=>24,'minimum_weight'=>3]);
   $data=['customer_id'=>$order->customer_id,'items'=>[0=>['service_id'=>$service->id,'quantity'=>2.5],4=>['service_id'=>$service->id,'quantity'=>1.25]],'notes'=>'Pisahkan pakaian putih'];
   $this->actingAs($this->cashier)->from(route('orders.create'))->post(route('orders.store'),$data)->assertSessionHasErrors('items.0.service_id');
-  $this->get(route('orders.create'))->assertOk()->assertSee('name="items[4][quantity]"',false)->assertSee('value="1.25"',false)->assertSee('Pisahkan pakaian putih')->assertSee('Total resmi setelah disimpan');
+  $this->get(route('orders.create'))->assertOk()->assertSee('name="items[4][quantity]"',false)->assertSee('value="1.25"',false)->assertSee('Pisahkan pakaian putih')->assertSee('Tagihan dihitung saat disimpan');
   $this->assertDatabaseCount('orders',1);
  }
  public function test_order_submission_still_uses_server_prices_and_longest_duration_for_mixed_units():void {
@@ -40,7 +40,7 @@ class StageBPresentationTest extends TestCase {
   $created=Order::latest('id')->firstOrFail();
   $this->assertEquals('50000.00',$created->total);
   $this->assertSame(now()->addHours(48)->toDateTimeString(),$created->estimated_at->toDateTimeString());
-  $this->get(route('orders.show',$created->id))->assertOk()->assertSee('Rp 50.000,00')->assertSee('Perjalanan pesanan');
+  $this->get(route('orders.show',$created->id))->assertOk()->assertSee('Rp 50.000,00')->assertSee('Progres pengerjaan');
  }
  public function test_detail_payment_actions_follow_current_state_role_and_existing_receipt_routes():void {
   $order=$this->makeOrder();

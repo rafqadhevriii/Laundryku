@@ -294,3 +294,26 @@ body.app-body .main .audit-payload { max-width:100%; overflow-x:auto; border-rad
  body.app-body .main .operation-intro .muted { font-size:11px; }
  body.app-body .main .module-split .module-table table { min-width:530px; }
 }
+
+/* Primary actions win over legacy teal button selectors without touching danger or ghost actions. */
+body.app-body .main button.btn:not(.btn-ghost):not(.btn-danger):not(.icon-button),
+body.app-body .main a.btn.btn-primary:not(.btn-ghost):not(.btn-danger) {
+ background:#1769ce;
+ border-color:#1769ce;
+ color:#fff;
+ box-shadow:0 6px 17px #206bbd20;
+}
+body.app-body .main button.btn:not(.btn-ghost):not(.btn-danger):not(.icon-button):hover,
+body.app-body .main a.btn.btn-primary:not(.btn-ghost):not(.btn-danger):hover {
+ background:#1257ad;
+ border-color:#1257ad;
+ color:#fff;
+}
+body.app-body .main .composer-summary { background:#fafdff; border:1px solid #dfeefa!important; }
+body.app-body .main .order-line,
+body.app-body .main .service-row { border-color:#e1edf4; }
+body.app-body .main .order-line:focus-within { border-color:#8fc2df; }
+body.app-body .main .module-table td .btn-ghost { border-color:#d5e9f7; color:#155c9b; }
+body.app-body .main .module-table td .btn-ghost:hover { background:#e7f4fe; }
+body.app-body .main .operation-intro.composer-intro .intro-greeting { display:none; }
+body.app-body .main .operation-intro.composer-intro .muted { font-size:12px; font-weight:650; color:#61819b; }

@@ -2,8 +2,8 @@
 @section('title','Laporan Operasional')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Alur kerja & kondisi cabang" :description="'Periode '.$start.' sampai '.$end.' · Ringkasan dari data operasional tercatat.'"/>
-<x-ui.workspace-context/>
+
+
 <x-ui.form-feedback/>
 <x-ui.report-filter :action="route('owner.operational.index')" :start="$start" :end="$end" :branch="$branch" :branches="$branches"><x-ui.button variant="ghost" :href="route('owner.operational.excel',request()->query())" icon="download">Unduh Excel</x-ui.button></x-ui.report-filter>
 <p class="notice">Jumlah pesanan dihitung berdasarkan tanggal pesanan dibuat. Pesanan terlambat mencakup pesanan dalam periode yang belum selesai sampai saat laporan dibuka. Kondisi stok menunjukkan jumlah terkini.</p>

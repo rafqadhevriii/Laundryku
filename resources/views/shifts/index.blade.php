@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Shift Kasir')
 @section('content')
-<div class="operation-intro"><div><p class="intro-greeting">Kas tercatat, pergantian shift lebih jelas.</p><p class="muted">Tunai terhubung ke shift penerima. Transfer/QRIS terpisah dari uang tunai.</p></div>@if(auth()->user()->isOwner())<x-ui.button :href="route('owner.reconciliation.index')" variant="ghost" icon="reconcile">Rekonsiliasi historis</x-ui.button>@endif</div>
+<div class="operation-intro"><div><p class="intro-greeting">Pengelolaan shift</p></div>@if(auth()->user()->isOwner())<x-ui.button :href="route('owner.reconciliation.index')" variant="ghost" icon="reconcile">Rekonsiliasi historis</x-ui.button>@endif</div>
 <x-ui.form-feedback/>
 @if(auth()->user()->isCashier())
 <section class="card shift-workspace">

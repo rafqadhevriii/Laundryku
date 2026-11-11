@@ -6,8 +6,8 @@
 
 <x-ui.form-feedback/>
 <div class="module-kpis">
-<x-ui.kpi label="Barang terdaftar" :value="$items->total()" :context="$activeBranchLabel" icon="box"/>
-<x-ui.kpi label="Stok menipis di halaman ini" :value="$items->getCollection()->filter(fn($item)=>(float)$item->quantity<=(float)$item->minimum_quantity)->count()" context="Dari barang yang tampil, bukan seluruh halaman" tone="warning" icon="alert"/>
+<x-ui.kpi label="Barang terdaftar" :value="$items->total()" context="" icon="box"/>
+<x-ui.kpi label="Stok menipis" :value="$items->getCollection()->filter(fn($item)=>(float)$item->quantity<=(float)$item->minimum_quantity)->count()" context="Pada halaman ini" tone="warning" icon="alert"/>
 <x-ui.kpi label="Koreksi menunggu" :value="$pending->count()" context="Menunggu persetujuan Pemilik" tone="info" icon="clock"/>
 </div>
 @if(auth()->user()->isOwner())

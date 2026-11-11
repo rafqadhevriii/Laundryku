@@ -2,9 +2,9 @@
 @section('title','Riwayat Aktivitas')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Jejak aktivitas usaha" description="Aktivitas penting tercatat bersama akun pelaku, referensi, dan waktu perubahan. Buka detail untuk memeriksa data yang dicatat."/>
-<x-ui.workspace-context :business-wide="true"/>
-<section class="card"><x-ui.section-header title="Riwayat Aktivitas Sistem" :description="$logs->total().' aktivitas tercatat · Urutan terbaru lebih dahulu'"/>
+
+
+<section class="card"><x-ui.section-header title="Riwayat aktivitas"/>
 @if($logs->isEmpty())<x-ui.empty-state title="Belum ada aktivitas." description="Tindakan penting akan muncul setelah dilakukan oleh pengguna." icon="clock"/>
 @else
 <x-ui.data-table label="Riwayat aktivitas sistem"><thead><tr><th scope="col">Waktu & pengguna</th><th scope="col">Aktivitas</th><th scope="col">Referensi</th><th scope="col">Detail tercatat</th></tr></thead><tbody>

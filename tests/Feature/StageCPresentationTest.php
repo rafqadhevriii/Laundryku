@@ -26,7 +26,7 @@ class StageCPresentationTest extends TestCase {
  public function test_stock_page_summary_is_explicitly_page_limited_and_mutation_old_input_is_scoped():void {
   for($i=0;$i<21;$i++)InventoryItem::create(['business_id'=>$this->business->id,'branch_id'=>$this->branch->id,'name'=>'STOCK-'.sprintf('%02d',$i),'category'=>'Deterjen','unit'=>'liter','quantity'=>1,'minimum_quantity'=>2]);
   $items=InventoryItem::orderBy('name')->get();
-  $this->actingAs($this->cashier)->get(route('inventory.index'))->assertOk()->assertSee('Stok menipis di halaman ini')->assertSee('Dari barang yang tampil, bukan seluruh halaman')->assertSee('Ke halaman 2');
+  $this->actingAs($this->cashier)->get(route('inventory.index'))->assertOk()->assertSee('Stok menipis')->assertSee('Pada halaman ini')->assertSee('Ke halaman 2');
   $this->from(route('inventory.index'))->post(route('inventory.move',$items[0]),['_form_context'=>'movement-'.$items[0]->id,'type'=>'out','quantity'=>3,'notes'=>'Preserved movement'])->assertSessionHasErrors('quantity');
   $response=$this->get(route('inventory.index'))->assertOk()->assertSee('quantity-error-'.$items[0]->id)->assertSee('Preserved movement');
   $this->assertSame(1,substr_count($response->getContent(),'value="Preserved movement"'));

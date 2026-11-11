@@ -4,7 +4,7 @@
 <div class="profile-page">
  <div class="profile-intro">
   <span class="profile-avatar-large" aria-hidden="true">{{ mb_strtoupper(mb_substr($user->name,0,1)) }}</span>
-  <div><h2>Profil akun</h2><p>Kelola informasi akun dan keamanan login Anda.</p></div>
+  <div><h2>Akun saya</h2><p>Informasi dan keamanan akun</p></div>
  </div>
  <div class="profile-panels">
   <section class="card profile-panel" aria-labelledby="profile-info-heading">

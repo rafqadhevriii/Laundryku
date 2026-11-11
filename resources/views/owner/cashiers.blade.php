@@ -2,8 +2,8 @@
 @section('title','Kelola Akun Kasir')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Tim kasir & penugasan" description="Kelola akun untuk seluruh usaha. Setiap kasir hanya bekerja pada cabang yang ditugaskan."/>
-<x-ui.workspace-context :business-wide="true"/>
+
+
 <x-ui.form-feedback/>
 <div class="module-split">
 <section class="card"><h2>Tambah kasir</h2><form method="POST" action="{{ route('owner.cashiers.store') }}" class="module-form">@csrf

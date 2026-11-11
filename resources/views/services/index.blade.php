@@ -2,8 +2,8 @@
 @section('title','Layanan dan Harga')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Layanan yang ditawarkan" description="Atur tarif per kilogram atau barang dan estimasi pengerjaan untuk seluruh usaha."><x-slot:actions><x-ui.button :href="route('owner.services.create')" icon="plus">Tambah Layanan</x-ui.button></x-slot:actions></x-ui.section-header>
-<x-ui.workspace-context :business-wide="true"/>
+<x-ui.section-header title="Daftar layanan"><x-slot:actions><x-ui.button :href="route('owner.services.create')" icon="plus">Tambah Layanan</x-ui.button></x-slot:actions></x-ui.section-header>
+
 <section class="card">
 <p class="result-count">{{ $services->total() }} layanan · Tarif yang diperbarui berlaku untuk pesanan berikutnya.</p>
 @if($services->isEmpty())<x-ui.empty-state title="Belum ada layanan laundry." description="Tambahkan layanan agar kasir dapat mencatat pesanan." icon="tag"/>

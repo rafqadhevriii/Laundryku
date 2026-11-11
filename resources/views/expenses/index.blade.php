@@ -2,13 +2,13 @@
 @section('title','Pengeluaran Operasional')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Catat biaya operasional" description="Simpan kategori, tanggal, dan nominal agar pengeluaran setiap cabang mudah ditelusuri."/>
-<x-ui.workspace-context/>
+
+
 <x-ui.form-feedback/>
 <div class="module-split">
 @if($activeBranchId===null)<x-ui.branch-required/>
 @else
-<section class="card"><h2>Catat pengeluaran</h2><p class="context-chip">Cabang aktif: {{ $activeBranchLabel }}</p>
+<section class="card"><h2>Catat pengeluaran</h2>
 <form method="POST" action="{{ route('expenses.store') }}" class="module-form">@csrf
 <x-ui.select name="category" label="Kategori (wajib)" required>@foreach(['Listrik dan air','Deterjen dan bahan pencuci','Perawatan mesin','Sewa tempat','Operasional lain'] as $category)<option value="{{ $category }}" @selected(old('category')===$category)>{{ $category }}</option>@endforeach</x-ui.select>
 <x-ui.form-control name="description" label="Keterangan (wajib)" maxlength="255" required hint="Contoh: pembelian kemasan atau tagihan listrik."/>
@@ -17,7 +17,7 @@
 <div class="form-actions"><x-ui.button icon="check">Simpan Pengeluaran</x-ui.button></div>
 </form></section>
 @endif
-<section class="card"><x-ui.section-header title="Daftar pengeluaran" :description="$expenses->total().' pengeluaran tercatat · '.$activeBranchLabel"/>
+<section class="card"><x-ui.section-header title="Riwayat pengeluaran"/>
 @if($expenses->isEmpty())<x-ui.empty-state title="Belum ada pengeluaran." description="Pengeluaran yang disimpan akan tampil di sini." icon="wallet"/>
 @else
 <x-ui.data-table label="Daftar pengeluaran operasional"><thead><tr><th scope="col">Tanggal & cabang</th><th scope="col">Kategori & keterangan</th><th scope="col" class="number-cell">Nominal</th></tr></thead><tbody>
