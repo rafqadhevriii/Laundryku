@@ -1,0 +1,99 @@
+/* Laundryku Stage D: streamlined operational pages. Presentation only. */
+.module-stack { gap: 20px; }
+.module-stack > .section-header,
+.main > .operation-intro { padding: 3px 2px 2px; }
+.module-stack > .section-header h2 { font-size: clamp(19px,1.7vw,24px); letter-spacing:-.6px; }
+.module-stack > .section-header p, .operation-intro .muted { font-size: 13px; color: #677a87; line-height: 1.6; }
+.operation-intro .intro-greeting { font-size: clamp(19px,1.7vw,23px); font-weight:750; letter-spacing:-.45px; }
+.module-context { color:#658085; font-size:12px; }
+.module-context .icon { color:#129b90; }
+.module-stack > .card,.main > .card,.operation-intro + .card,
+.order-composer .card { border-radius:18px; border-color:#e7eeee; box-shadow:0 6px 25px rgba(17,58,68,.035); }
+.module-stack .section-header h2, .operation-intro + .card h2 { letter-spacing:-.35px; }
+.card .section-header p { max-width:72ch; color:#6d7e8a; }
+.module-search,.order-filters,.report-filter { gap:12px 15px; }
+.module-search input,.order-filters input,.report-filter input,
+.module-search select,.order-filters select,.report-filter select {
+  background:#fafdfe; border-radius:11px; border-color:#cddfdf; }
+.module-search input:focus,.order-filters input:focus,.report-filter input:focus {
+  background:white; box-shadow:0 0 0 3px rgba(21,158,154,.12); }
+.module-search .btn,.order-filters .btn,.report-filter .btn { border-radius:11px; }
+.context-chip { background:#eaf8f5; color:#157f74; border:1px solid #cdece5; border-radius:999px; padding:8px 14px; font-weight:600; }
+.result-count { margin:15px 0; font-size:12px; }
+.table-wrap,.module-table { border-radius:13px; }
+.module-table { border-color:#ebf1f0; }
+.module-table table,.orders-table table { border-collapse:separate; border-spacing:0; }
+.module-table thead th,.orders-table thead th { background:#f4f9f9; color:#627785; font-size:11px; letter-spacing:.15px; border-bottom-color:#eaf0f1; }
+.module-table thead th:first-child,.orders-table thead th:first-child { border-radius:10px 0 0 10px; }
+.module-table thead th:last-child,.orders-table thead th:last-child { border-radius:0 10px 10px 0; }
+.module-table tbody tr,.orders-table tbody tr { transition:background-color 170ms ease; }
+.module-table tbody tr:hover,.orders-table tbody tr:hover { background:#f6fbfa; }
+.module-table td,.module-table th,.orders-table td,.orders-table th { border-bottom-color:#edf1f2; }
+.module-table td .btn-ghost { border-color:#dbeae7; color:#167c77; }
+.module-table td .btn-ghost:hover { background:#e8f7f3; }
+.module-table th[scope=row],.orders-table th[scope=row] { background:transparent; }
+.module-table a:not(.btn),.orders-table a { color:#11887e; font-weight:650; }
+.cell-subtext { color:#78909a; }
+.status-badge { border-radius:999px; padding:6px 10px; font-size:11px; white-space:nowrap; }
+.operation-pagination { border-top-color:#ecf1f2; }
+.order-filters { padding:2px 0 0; }
+.order-preview { border-radius:16px; box-shadow:0 5px 21px #13454d08; }
+.order-preview:hover { border-color:#b8e4dc; }
+.order-line { border-color:#e1edeb; border-radius:13px; }
+.order-line:focus-within { border-color:#b4e4da; }
+.composer-summary { border:1px solid #d6eae5!important; background:linear-gradient(160deg,#fff 0%,#fbfefc 100%); }
+.summary-estimate { background:#eaf8f4; border-radius:12px; }
+.summary-total-note { border-top-color:#dfece9; }
+.order-timeline li { border-top-color:#dce9e8; }
+.step-marker { border-radius:12px; }
+.step-current .step-marker { background:#11998d; }
+.next-action,.payment-amount,.shift-balance-grid > div { background:#f3faf9; border:1px solid #e1efeb; border-radius:13px; }
+.next-action { flex-wrap:wrap; }
+.shift-balance-grid strong { color:#1e3c4c; }
+.module-form-card { max-width:850px; }
+.module-form input,.module-form select,.module-form textarea { border-radius:10px; }
+.module-form input:focus,.module-form select:focus,.module-form textarea:focus { box-shadow:0 0 0 3px rgba(21,158,154,.12); }
+.form-actions { flex-wrap:wrap; }
+.form-actions .btn { border-radius:11px; }
+.module-kpis { gap:13px; }
+.module-kpis .kpi-card { border:1px solid #e5eeee; border-top:1px solid #e5eeee; border-radius:16px; background:#fff; box-shadow:0 4px 19px #123f4c07; transition:transform .2s ease,box-shadow .2s ease; }
+.module-kpis .kpi-card:hover { transform:translateY(-3px); box-shadow:0 10px 25px #123f4c10; }
+.module-kpis .kpi-icon { border-radius:12px; background:#e5f8f2; }
+.module-kpis .kpi-number { letter-spacing:-.7px; }
+.stock-grid { gap:15px; }
+.stock-card { border-radius:16px; border-color:#e3eceb; background:#fff; box-shadow:0 5px 24px #123f4c07; transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease; }
+.stock-card:hover { border-color:#b3dcd5; transform:translateY(-2px); box-shadow:0 12px 26px #123f4c10; }
+.stock-heading h3 { font-size:16px; letter-spacing:-.25px; }
+.stock-heading p { color:#71858a; }
+.stock-quantity { padding:12px; background:#f6faf9; border-radius:12px; }
+.stock-quantity dd { color:#203e4b; }
+.module-details summary { color:#11897e; }
+.module-details summary:hover { color:#0d746b; }
+.report-downloads { border-top-color:#e7eded; }
+.report-downloads .btn { border-radius:10px; }
+.report-filter { border:1px solid #e6eeee; border-radius:17px; padding:18px; background:#fff; }
+.report-filter .context-chip { border-radius:11px; }
+.module-facts { gap:15px; }
+.module-facts > div { padding:15px; border-radius:12px; background:#f6faf9; }
+.notice { border-radius:11px; }
+@keyframes module-slide-in { from { opacity:0; transform:translateY(9px) } to { opacity:1; transform:translateY(0) } }
+.module-stack > .section-header,.module-stack > .card,.main > .operation-intro,.order-composer > *,
+.module-stack > .module-kpis,.module-stack > .stock-grid,.main > .card {
+ animation:module-slide-in .38s ease both;
+}
+.module-stack > .card:nth-child(3),.module-stack > .stock-grid,.main > .card:nth-of-type(2) { animation-delay:.07s; }
+.module-stack > .card:nth-child(4),.main > .card:nth-of-type(3) { animation-delay:.12s; }
+@media(max-width:768px) {
+ .module-stack { gap:16px; }
+ .module-kpis { gap:10px; }
+ .stock-grid { gap:12px; }
+ .module-form-card { max-width:100%; }
+ .module-stack > .card,.main > .card { padding:17px; }
+ .report-filter { padding:13px; }
+ .module-table tbody tr:hover,.orders-table tbody tr:hover { background:transparent; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .module-stack > .section-header,.module-stack > .card,.main > .operation-intro,.order-composer > *,
+ .module-stack > .module-kpis,.module-stack > .stock-grid,.main > .card { animation:none!important; }
+ .stock-card:hover,.module-kpis .kpi-card:hover { transform:none; }
+}

@@ -9,7 +9,7 @@
 @if($customers->isEmpty() || $services->isEmpty())<x-ui.alert type="error">Pastikan sudah ada pelanggan dan layanan aktif sebelum membuat pesanan. <a href="{{ route('customers.create') }}">Tambah pelanggan</a>@if(auth()->user()->isOwner()) · <a href="{{ route('owner.services.create') }}">Tambah layanan</a>@endif</x-ui.alert>@endif
 <form method="POST" action="{{ route('orders.store') }}" data-order-form>@csrf
 <div class="order-composer"><div class="composer-fields">
-<section class="card"><x-ui.section-header title="1. Pelanggan & cabang" description="Pelanggan harus berasal dari cabang yang sama."/>
+<section class="card"><x-ui.section-header title="1. Pilih pelanggan" description="Pelanggan mengikuti cabang aktif secara otomatis."/>
 <p class="context-chip"><x-ui.icon name="building"/><span>Cabang aktif: {{ $activeBranchLabel }}</span></p>
 <x-ui.select name="customer_id" label="Pelanggan" required data-order-customer><option value="">Pilih pelanggan</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" data-branch="{{ $customer->branch_id }}" @selected(old('customer_id')==$customer->id)>{{ $customer->name }} ({{ $customer->phone??'tanpa telepon' }})</option>@endforeach</x-ui.select>
 <p class="field-hint">Belum terdaftar? <a href="{{ route('customers.create') }}">Tambah pelanggan</a> sebelum melanjutkan.</p>
