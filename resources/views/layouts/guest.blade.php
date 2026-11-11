@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="id"><head><x-layout.head/></head>
-<body class="guest-body">
+<body class="guest-body coachpro-guest">
 <a href="#main-content" class="skip-link">Lewati ke formulir</a>
-<div class="auth-shell">
-<aside class="auth-story" aria-label="Tentang Laundryku">
-<x-ui.brand light/>
-<div class="auth-story-content"><p class="eyebrow">Ruang kerja laundry Anda</p><h2>Operasional rapi.<br>Usaha terkendali.</h2><p>Kelola pesanan, pantau setiap cabang, dan lihat perjalanan usaha dalam satu tempat.</p>
-<div class="laundry-illustration" aria-hidden="true"><div class="illustration-ring"></div><x-ui.icon name="shirt"/><span class="bubble bubble-one"></span><span class="bubble bubble-two"></span><span class="illustration-caption">Bersih dalam layanan.<br>Rapi dalam pengelolaan.</span></div>
-<div class="auth-feature"><x-ui.icon name="bag"/><div><strong>Dari diterima hingga diambil</strong><span>Alur pesanan yang mudah diikuti.</span></div></div>
-<div class="auth-feature"><x-ui.icon name="chart"/><div><strong>Gambaran usaha lebih jelas</strong><span>Operasional dan pendapatan dalam satu ruang.</span></div></div>
-</div><p class="auth-story-foot">Dibuat untuk ritme kerja laundry sehari-hari.</p>
-</aside>
-<main id="main-content" class="auth-main" tabindex="-1"><div class="auth-mobile-brand"><x-ui.brand/></div><div class="auth-card">@yield('content')</div><p class="auth-footer"><x-ui.icon name="lock"/>Akses sesuai peran Pemilik dan Kasir.</p></main>
-</div></body></html>
+<div class="auth-shell coachpro-auth-shell">
+ <aside class="auth-story coachpro-auth-story" aria-label="Laundryku">
+  <x-ui.brand light/>
+  <div class="coachpro-auth-visual">
+   <span class="coachpro-auth-eyebrow">SATU TEMPAT UNTUK OPERASIONAL LAUNDRY</span>
+   <h2>Kerja lebih rapi.<br>Hari lebih ringan.</h2>
+   <p>Pesanan, pembayaran, dan perkembangan usaha tertata dalam satu aplikasi.</p>
+   <div class="coachpro-preview" aria-hidden="true">
+    <div class="coachpro-preview-top"><span class="coachpro-preview-dot"></span><span class="coachpro-preview-dot"></span><span class="coachpro-preview-dot"></span><span class="coachpro-preview-label">Ringkasan Laundryku</span></div>
+    <div class="coachpro-preview-grid"><div><small>Pesanan</small><strong>24</strong><span class="coachpro-preview-bar"></span></div><div><small>Selesai</small><strong>18</strong><span class="coachpro-preview-bar"></span></div><div><small>Pendapatan</small><strong>Rp 480rb</strong><span class="coachpro-preview-bar"></span></div></div>
+    <div class="coachpro-preview-lines"><span></span><span></span><span></span></div>
+   </div>
+  </div>
+  <p class="coachpro-auth-footer">Laundryku</p>
+ </aside>
+ <main id="main-content" class="auth-main coachpro-auth-main" tabindex="-1">
+  <div class="auth-mobile-brand"><x-ui.brand/></div>
+  <div class="auth-card coachpro-auth-card">@yield('content')</div>
+ </main>
+</div>
+</body></html>

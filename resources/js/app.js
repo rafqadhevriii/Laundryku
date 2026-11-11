@@ -190,3 +190,34 @@ if (quickSearch) {
         quickSearch.focus();
     });
 }
+
+/* Date and clock are always formatted in the business timezone (WIB), not device timezone. */
+for (const clock of document.querySelectorAll('[data-live-clock]')) {
+    const dateEl = clock.querySelector('[data-clock-date]');
+    const timeEl = clock.querySelector('[data-clock-time]');
+    const formatDate = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', day: 'numeric', month: 'long', year: 'numeric' });
+    const formatTime = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const renderClock = () => {
+        const now = new Date();
+        if (dateEl) dateEl.textContent = formatDate.format(now);
+        if (timeEl) timeEl.textContent = formatTime.format(now).replace('.', ':') + ' WIB';
+    };
+    renderClock();
+    const updateInterval = setInterval(renderClock, 30_000);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) renderClock();
+    });
+    window.addEventListener('pagehide', () => clearInterval(updateInterval), { once:true });
+}
+
+/* Shared business date keeps dashboard and live topbar aligned. */
+const businessDateFormatter = new Intl.DateTimeFormat('id-ID', {
+    timeZone:'Asia/Jakarta', weekday:'long', day:'numeric', month:'long', year:'numeric'
+});
+const renderBusinessDates = () => {
+    for(const el of document.querySelectorAll('[data-business-date]')) {
+        el.textContent = businessDateFormatter.format(new Date());
+    }
+};
+renderBusinessDates();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) renderBusinessDates(); });

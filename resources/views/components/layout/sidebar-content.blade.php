@@ -1,4 +1,4 @@
-<div class="sidebar-brand"><a href="{{ route('dashboard') }}" aria-label="Beranda Laundryku"><x-ui.brand light/></a></div>
+<div class="sidebar-brand"><a href="{{ route('dashboard') }}" aria-label="Beranda Laundryku"><x-ui.brand/></a></div>
 <nav class="sidebar-nav sidebar-navigation-minimal" aria-label="Menu utama">
  <p class="nav-heading">RUANG KERJA</p>
  <x-layout.nav-item route="dashboard" pattern="dashboard" icon="grid">Beranda</x-layout.nav-item>

@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/css/dashboard-refresh.css', 'resources/css/module-refresh.css', 'resources/css/workspace-v2.css', 'resources/css/workspace-v3.css', 'resources/css/studio-ui.css', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/css/dashboard-refresh.css', 'resources/css/module-refresh.css', 'resources/css/workspace-v2.css', 'resources/css/workspace-v3.css', 'resources/css/studio-ui.css', 'resources/css/coachpro-blue.css', 'resources/js/app.js'],
             refresh: true,
         }),
         tailwindcss(),

@@ -12,6 +12,10 @@
   <strong class="studio-mobile-wordmark">Laundryku</strong>
  </div>
  <div class="topbar-right">
+  <div class="topbar-live-clock" data-live-clock role="timer" aria-label="Tanggal dan waktu Indonesia Barat">
+   <span data-clock-date>{{ now()->locale('id')->translatedFormat('d F Y') }}</span>
+   <strong data-clock-time>--:-- WIB</strong>
+  </div>
 
   <details class="profile-menu" data-profile-menu>
    <summary class="profile-trigger" aria-label="Buka menu profil {{ auth()->user()->name }}">
