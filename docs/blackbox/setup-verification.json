@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "accounts": 3,
+    "branches": 2,
+    "orders": 6,
+    "shifts": 2,
+    "cash_a": "40000.00",
+    "expected_a": "140000.00"
+  },
+  "repeat_setup_refused_without_changes": true,
+  "protected_database_configuration_refused_before_setup": true,
+  "root_refused": true,
+  "engine_rejects_protected_canary_writes": true,
+  "phpunit_does_not_reset_manual_fixture": true,
+  "advanced_append_and_repeat_refusal": true,
+  "manual_results": "Belum diuji manual",
+  "automated_suite": {
+    "tests": 98,
+    "assertions": 1120,
+    "database": "laundryku_testing"
+  },
+  "manual_fixture_unchanged_after_final_suite": true,
+  "direct_fixture_calls_refused_before_sql": true
+}

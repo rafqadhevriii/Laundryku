@@ -32,6 +32,20 @@ return [
 
     'connections' => [
 
+        // Dedicated manual environment: never derived from DB_DATABASE or DB_URL.
+        'blackbox' => [
+            'driver' => 'mysql', 'url' => null,
+            'host' => env('BLACKBOX_DB_HOST', '127.0.0.1'),
+            'port' => env('BLACKBOX_DB_PORT', '3306'),
+            'database' => 'laundryku_blackbox',
+            'username' => env('BLACKBOX_DB_USERNAME', ''),
+            'password' => env('BLACKBOX_DB_PASSWORD', ''),
+            'unix_socket' => env('BLACKBOX_DB_SOCKET', ''),
+            'charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '', 'prefix_indexes' => true, 'strict' => true,
+            'engine' => null, 'options' => [],
+        ],
+
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),

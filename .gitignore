@@ -24,3 +24,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Manual Black Box credentials, caches, sessions and evidence stay local.
+/.env.blackbox
+/storage/blackbox/
