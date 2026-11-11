@@ -6,6 +6,7 @@ use App\Models\InventoryItem;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+
 class DashboardController extends Controller {
  public function index(Request $request) {
   $user=$request->user()->loadMissing('business','branch');
@@ -27,10 +28,25 @@ class DashboardController extends Controller {
   ];
   if($user->isOwner())array_unshift($stats,['label'=>'Cabang aktif','value'=>$user->business->branches()->where('is_active',true)->when($branch,fn($q)=>$q->whereKey($branch))->count()]);
   else $stats[]=['label'=>'Shift berjalan','value'=>app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request)->where('cashier_id',$user->id)->where('status','open')->exists()?'Aktif':'Belum dibuka'];
-  $recent=(clone $orders)->with('customer')->latest()->limit(8)->get();
-  $overdue=(clone $orders)->with('customer','branch')->whereIn('status',['received','processing'])->whereNotNull('estimated_at')->where('estimated_at','<',now())->orderBy('estimated_at')->limit(6)->get();
-  $ready=(clone $orders)->with('customer','branch')->where('status','ready')->oldest('updated_at')->limit(6)->get();
-  $lowStock=(clone $stock)->with('branch')->whereColumn('quantity','<=','minimum_quantity')->orderBy('quantity')->limit(6)->get();
-  return view('dashboard.index',compact('user','stats','recent','overdue','ready','lowStock'));
+  $recent=(clone $orders)->with('customer')->latest()->limit(6)->get();
+  $overdue=(clone $orders)->with('customer','branch')->whereIn('status',['received','processing'])->whereNotNull('estimated_at')->where('estimated_at','<',now())->orderBy('estimated_at')->limit(3)->get();
+  $ready=(clone $orders)->with('customer','branch')->where('status','ready')->oldest('updated_at')->limit(3)->get();
+  $lowStock=(clone $stock)->with('branch')->whereColumn('quantity','<=','minimum_quantity')->orderBy('quantity')->limit(3)->get();
+
+  // Pembayaran yang sudah diterima, mengikuti usaha dan cabang aktif. Bukan omzet pesanan.
+  $revenueHistory=[];
+  $maxRevenue=0;
+  if($user->isOwner()){
+   $start=now()->startOfDay()->subDays(6);
+   $byDate=(clone $payments)->where('status','paid')->whereBetween('paid_at',[$start,now()->endOfDay()])
+    ->get(['paid_at','amount'])->groupBy(fn($payment)=>$payment->paid_at->toDateString());
+   for($day=0;$day<7;$day++){
+    $date=$start->copy()->addDays($day);
+    $total=(float)($byDate->get($date->toDateString())?->sum('amount')??0);
+    $revenueHistory[]=['day'=>$date->translatedFormat('D'),'date'=>$date->translatedFormat('d F Y'),'total'=>$total];
+    $maxRevenue=max($maxRevenue,$total);
+   }
+  }
+  return view('dashboard.index',compact('user','stats','recent','overdue','ready','lowStock','revenueHistory','maxRevenue'));
  }
 }
