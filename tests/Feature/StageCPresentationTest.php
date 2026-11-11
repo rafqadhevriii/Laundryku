@@ -45,6 +45,6 @@ class StageCPresentationTest extends TestCase {
   foreach(['customers.index'=>'Belum ada pelanggan.','inventory.index'=>'Belum ada data stok.','expenses.index'=>'Belum ada pengeluaran.'] as $name=>$empty)$this->get(route($name))->assertOk()->assertSee($empty);
   $this->actingAs($this->owner);
   foreach(['owner.services.index'=>'Belum ada layanan laundry.','owner.reports.index'=>'Belum ada pembayaran lunas pada periode ini.','owner.operational.index'=>'Tidak ada stok menipis.','owner.reconciliation.index'=>'Tidak ada pembayaran tunai tanpa shift sesuai filter.','owner.audit.index'=>'Belum ada aktivitas.'] as $name=>$empty)$this->get(route($name))->assertOk()->assertSee($empty);
-  foreach(['customers.create','inventory.index','expenses.index'] as $name)$this->get(route($name))->assertSee('Pilih cabang aktif terlebih dahulu');
+  foreach(['customers.create','inventory.index','expenses.index'] as $name)$this->get(route($name))->assertSee('Pilih lokasi kerja');
  }
 }

@@ -30,7 +30,7 @@ class ActiveBranchContextTest extends TestCase {
  }
  public function test_all_mode_blocks_new_records_and_selected_order_uses_server_context():void {
   $a=$this->makeOrder();$b=$this->makeOrder($this->otherBranch);$payload=$this->payload($b);
-  $this->actingAs($this->owner)->get(route('orders.create'))->assertSee('Pilih cabang aktif terlebih dahulu')->assertDontSee('name="customer_id"',false);
+  $this->actingAs($this->owner)->get(route('orders.create'))->assertSee('Pilih lokasi kerja')->assertDontSee('name="customer_id"',false);
   $this->post(route('orders.store'),$payload+['branch_id'=>$this->otherBranch->id])->assertSessionHasErrors('active_branch');
   $this->withSession(['_old_input'=>['customer_id'=>$a->customer_id]]);$this->choose($this->otherBranch->id,'orders.create')->assertRedirect(route('orders.create'))->assertSessionMissing('_old_input');
   $this->get(route('orders.create'))->assertOk()->assertDontSee('name="branch_id"',false)->assertViewHas('customers',fn($rows)=>$rows->count()===1 && $rows->first()->id===$b->customer_id);
@@ -42,7 +42,7 @@ class ActiveBranchContextTest extends TestCase {
  public function test_cashier_ignores_session_query_and_payload_and_cannot_switch():void {
   $a=$this->makeOrder();$this->makeOrder($this->otherBranch,'OTHER');$payload=$this->payload($a);
   $this->actingAs($this->cashier)->withSession([app(ActiveBranchContext::class)->sessionKey($this->cashier)=>$this->otherBranch->id]);
-  $this->get(route('orders.create',['branch_id'=>$this->otherBranch->id]))->assertOk()->assertSee('Cabang penugasan')->assertDontSee('name="active_branch"',false);
+  $this->get(route('orders.create',['branch_id'=>$this->otherBranch->id]))->assertOk()->assertDontSee('name="active_branch"',false);
   $this->choose($this->otherBranch->id)->assertForbidden();
   $this->post(route('orders.store'),$payload+['branch_id'=>$this->otherBranch->id])->assertSessionHasNoErrors();
   $this->assertSame($this->branch->id,Order::latest('id')->firstOrFail()->branch_id);

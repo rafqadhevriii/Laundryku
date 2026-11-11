@@ -27,7 +27,7 @@ class UiShellTest extends TestCase {
  }
  public function test_cashier_navigation_omits_owner_routes_and_keeps_operational_routes():void {
   $this->paymentFixtures();
-  $response=$this->actingAs($this->cashier)->get(route('dashboard'))->assertOk()->assertSee($this->branch->name);
+  $response=$this->actingAs($this->cashier)->get(route('dashboard'))->assertOk()->assertDontSee('name="active_branch"',false);
   foreach(['orders.index','customers.index','shifts.index','expenses.index','inventory.index'] as $route)$response->assertSee(route($route),false);
   foreach(['owner.reports.index','owner.reconciliation.index','owner.cashiers.index'] as $route)$response->assertDontSee(route($route),false);
   $this->get(route('owner.reconciliation.index'))->assertForbidden();

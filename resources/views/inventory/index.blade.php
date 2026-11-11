@@ -2,8 +2,8 @@
 @section('title','Stok Bahan Laundry')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Persediaan untuk operasional" description="Pantau ketersediaan bahan, catat barang masuk atau keluar, dan ajukan koreksi hasil hitung fisik."/>
-<x-ui.workspace-context/>
+
+
 <x-ui.form-feedback/>
 <div class="module-kpis">
 <x-ui.kpi label="Barang terdaftar" :value="$items->total()" :context="$activeBranchLabel" icon="box"/>

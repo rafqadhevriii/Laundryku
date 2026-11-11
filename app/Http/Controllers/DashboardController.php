@@ -28,7 +28,7 @@ class DashboardController extends Controller {
   ];
   if($user->isOwner())array_unshift($stats,['label'=>'Cabang aktif','value'=>$user->business->branches()->where('is_active',true)->when($branch,fn($q)=>$q->whereKey($branch))->count()]);
   else $stats[]=['label'=>'Shift berjalan','value'=>app(\App\Services\ActiveBranchContext::class)->scope(CashShift::query(),$request)->where('cashier_id',$user->id)->where('status','open')->exists()?'Aktif':'Belum dibuka'];
-  $recent=(clone $orders)->with('customer')->latest()->limit(6)->get();
+  $recent=(clone $orders)->with('customer')->latest()->limit(5)->get();
   $overdue=(clone $orders)->with('customer','branch')->whereIn('status',['received','processing'])->whereNotNull('estimated_at')->where('estimated_at','<',now())->orderBy('estimated_at')->limit(3)->get();
   $ready=(clone $orders)->with('customer','branch')->where('status','ready')->oldest('updated_at')->limit(3)->get();
   $lowStock=(clone $stock)->with('branch')->whereColumn('quantity','<=','minimum_quantity')->orderBy('quantity')->limit(3)->get();

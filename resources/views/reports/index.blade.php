@@ -2,8 +2,8 @@
 @section('title','Laporan Pendapatan')
 @section('content')
 <div class="module-stack">
-<x-ui.section-header title="Penerimaan & biaya usaha" :description="'Periode '.$start.' sampai '.$end.'. Pembayaran berdasarkan tanggal terkonfirmasi; pesanan berdasarkan tanggal dibuat.'"/>
-<x-ui.workspace-context/>
+
+
 <x-ui.form-feedback/>
 <x-ui.report-filter :action="route('owner.reports.index')" :start="$start" :end="$end" :branch="$branch" :branches="$branches">
 <x-ui.button variant="ghost" :href="route('owner.reports.export',request()->query())" icon="download">Ekspor CSV</x-ui.button><x-ui.button variant="ghost" :href="route('owner.reports.pdf',request()->query())" icon="download">Unduh PDF</x-ui.button><x-ui.button variant="ghost" :href="route('owner.reports.excel',request()->query())" icon="download">Unduh Excel</x-ui.button>

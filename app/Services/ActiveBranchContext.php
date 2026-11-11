@@ -47,14 +47,14 @@ class ActiveBranchContext {
  }
  public function requireBranch(Request $request,bool $lock=false):Branch {
   $context=$this->resolve($request);
-  if($context['id']===null)throw ValidationException::withMessages(['active_branch'=>'Pilih satu cabang aktif melalui header sebelum menyimpan data baru.']);
+  if($context['id']===null)throw ValidationException::withMessages(['active_branch'=>'Pilih lokasi kerja melalui menu akun sebelum menyimpan data baru.']);
   $query=Branch::where('business_id',$context['user']->business_id)->where('is_active',true)->whereKey($context['id']);
   if($lock)$query->lockForUpdate();
   $branch=$query->first();
   if(!$branch){
    $request->session()->forget($this->sessionKey($context['user']));
    $request->attributes->remove(self::ATTRIBUTE);
-   throw ValidationException::withMessages(['active_branch'=>'Cabang aktif tidak lagi valid. Pilih ulang melalui header dan ulangi tindakan.']);
+   throw ValidationException::withMessages(['active_branch'=>'Cabang aktif tidak lagi valid. Pilih ulang melalui menu akun dan ulangi tindakan.']);
   }
   return $branch;
  }
@@ -72,7 +72,7 @@ class ActiveBranchContext {
  public function reportBranch(Request $request,mixed $requested=null):?int {
   $active=$this->id($request);
   if($active!==null){
-   if($requested!==null && $requested!=='' && (int)$requested!==$active)throw ValidationException::withMessages(['branch_id'=>'Filter laporan berbeda dari cabang aktif. Ubah cabang melalui header atau gunakan Semua Cabang.']);
+   if($requested!==null && $requested!=='' && (int)$requested!==$active)throw ValidationException::withMessages(['branch_id'=>'Filter laporan berbeda dari cabang aktif. Ubah lokasi kerja melalui menu akun atau gunakan Semua Cabang.']);
    return $active;
   }
   return $requested===null||$requested===''?null:(int)$requested;

@@ -146,3 +146,47 @@ for (const menu of document.querySelectorAll('[data-profile-menu]')) {
         if (!menu.contains(event.target)) menu.open = false;
     });
 }
+
+/* Contextual location picker: shown only when the owner needs a branch to create records. */
+for (const action of document.querySelectorAll('[data-open-branch]')) {
+    action.addEventListener('click', () => {
+        const profile = document.querySelector('[data-profile-menu]');
+        const location = profile?.querySelector('.studio-location-details');
+        if (!profile || !location) return;
+        profile.open = true;
+        location.open = true;
+        const returnRoute = location.querySelector('input[name="return_route"]');
+        if (returnRoute) returnRoute.value = action.dataset.createRoute || 'orders.create';
+        const select = location.querySelector('select[name="active_branch"]');
+        if (select) {
+            const allOption = select.querySelector('option[value="all"]');
+            if (allOption) {
+                allOption.value = '';
+                allOption.textContent = 'Pilih lokasi kerja';
+                allOption.disabled = true;
+                allOption.selected = true;
+                select.required = true;
+            }
+            if (select.options.length === 2) select.selectedIndex = 1;
+        }
+        requestAnimationFrame(() => select?.focus());
+    });
+}
+
+/* Quick search shortcut, active only outside editable controls. */
+const quickSearch = document.querySelector('#studio-global-search') ?? document.querySelector('#order-search');
+if (quickSearch) {
+    document.addEventListener('keydown', event => {
+        if (event.defaultPrevented || event.ctrlKey || event.altKey || event.metaKey) return;
+        if (event.key === 'Escape' && document.activeElement === quickSearch) {
+            quickSearch.blur();
+            return;
+        }
+        if (event.key !== '/') return;
+        const focused = document.activeElement;
+        if (focused?.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(focused?.tagName)) return;
+        if (!quickSearch.getClientRects().length) return;
+        event.preventDefault();
+        quickSearch.focus();
+    });
+}
