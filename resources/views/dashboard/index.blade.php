@@ -14,7 +14,7 @@ $attentionCount=$overdue->count()+$lowStock->count();
 <div class="dashboard-modern">
  <header class="dashboard-hero">
   <div>
-   <p class="dashboard-kicker">{{ now()->translatedFormat('l, d F Y') }}</p>
+   <p class="dashboard-kicker">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</p>
    <h1>Ringkasan hari ini</h1>
    <p>{{ $user->name }} · {{ $activeBranchLabel }}</p>
   </div>

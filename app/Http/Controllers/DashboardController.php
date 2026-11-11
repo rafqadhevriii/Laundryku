@@ -43,7 +43,7 @@ class DashboardController extends Controller {
    for($day=0;$day<7;$day++){
     $date=$start->copy()->addDays($day);
     $total=(float)($byDate->get($date->toDateString())?->sum('amount')??0);
-    $revenueHistory[]=['day'=>$date->translatedFormat('D'),'date'=>$date->translatedFormat('d F Y'),'total'=>$total];
+    $revenueHistory[]=['day'=>$date->locale('id')->translatedFormat('D'),'date'=>$date->locale('id')->translatedFormat('d F Y'),'total'=>$total];
     $maxRevenue=max($maxRevenue,$total);
    }
   }

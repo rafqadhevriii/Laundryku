@@ -133,3 +133,13 @@ body.app-body { font-family:Inter,"Segoe UI Variable","Segoe UI",Arial,sans-seri
  .profile-page,.profile-popover,.main > * { animation:none!important; }
  .profile-trigger > .icon { transition:none; }
 }
+/* Final responsive alignment: keep account access visible on narrow screens. */
+.dashboard-main-grid { align-items:start; }
+@media (max-width:700px) {
+ .topbar-right .topbar-branch { order:0; flex:1 1 0; min-width:0; }
+ .topbar-right .profile-menu { order:1; flex:0 0 auto; }
+ .topbar-right .profile-trigger { min-width:43px; width:auto; gap:0; padding:3px; }
+ .topbar-right .profile-menu .avatar { display:grid; width:35px; height:35px; border-radius:12px; }
+ .topbar-right .profile-trigger > .icon { display:none; }
+ .topbar-right .profile-popover { right:0; }
+}

@@ -50,7 +50,3 @@
  </details>
  @endif
 </nav>
-<div class="sidebar-foot sidebar-footer-minimal">
- <span class="sidebar-foot-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name,0,1)) }}</span>
- <span class="sidebar-foot-info"><strong>{{ auth()->user()->name }}</strong><small>{{ auth()->user()->isOwner()?'Pemilik usaha':'Kasir' }}</small></span>
-</div>
