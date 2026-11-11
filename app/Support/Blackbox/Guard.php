@@ -28,7 +28,9 @@ class Guard
 
     public static function application(Application $app): void
     {
-        if(!defined('LAUNDRYKU_BLACKBOX_LAUNCHER')||$app->storagePath()!==$app->basePath('storage/blackbox'))throw new SafetyException('Gunakan php scripts/blackbox.php; storage/sesi utama tidak boleh dipakai.');
+        $expected=realpath($app->basePath('storage/blackbox'));
+        $actual=realpath($app->storagePath());
+        if(!defined('LAUNDRYKU_BLACKBOX_LAUNCHER')||$expected===false||$actual===false||$actual!==$expected)throw new SafetyException('Gunakan php scripts/blackbox.php; storage/sesi utama tidak boleh dipakai.');
         self::configuration($app->environment(),config('database.default'),config('database.connections.blackbox',[]));
         $db=$app->make('db')->connection('blackbox');
         if(($db->selectOne('SELECT DATABASE() AS db_name')->db_name??'')!=='laundryku_blackbox')throw new SafetyException('Database aktual bukan laundryku_blackbox.');
