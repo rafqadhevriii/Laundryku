@@ -14,8 +14,8 @@ $needsAttention=$overdue->count()+$lowStock->count();
 <div class="studio-dashboard">
  <header class="studio-welcome">
   <div>
-   <p class="studio-eyebrow"><span class="studio-online-indicator"></span><span data-business-date>{{ now()->locale('id')->translatedFormat('l, d F Y') }}</span></p>
-   <h1>Selamat datang, {{ Str::before($user->name,' ') }} <span aria-hidden="true">✦</span></h1>
+   <p class="studio-eyebrow"><span class="studio-online-indicator"></span>Selamat datang kembali, {{ Str::before($user->name,' ') }}</p>
+   <h1>Dashboard <span aria-hidden="true">✦</span></h1>
   </div>
   @if($user->isOwner() && $activeBranchId===null)
   <x-ui.button type="button" icon="plus" class="studio-primary-action" data-open-branch>Buat pesanan</x-ui.button>
