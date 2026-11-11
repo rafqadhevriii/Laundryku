@@ -14,9 +14,9 @@ $attentionCount=$overdue->count()+$lowStock->count();
 <div class="dashboard-modern">
  <header class="dashboard-hero">
   <div>
-   <p class="dashboard-kicker">Ringkasan operasional <span aria-hidden="true">•</span> {{ now()->translatedFormat('d F Y') }}</p>
-   <h1>Selamat datang, {{ $user->name }}!</h1>
-   <p>Pantau pesanan dan aktivitas laundry di {{ $activeBranchLabel }}.</p>
+   <p class="dashboard-kicker">{{ now()->translatedFormat('l, d F Y') }}</p>
+   <h1>Ringkasan hari ini</h1>
+   <p>{{ $user->name }} · {{ $activeBranchLabel }}</p>
   </div>
   <x-ui.button :href="route('orders.create')" icon="bag" class="dashboard-new-order">Tambah Pesanan</x-ui.button>
  </header>
@@ -37,8 +37,8 @@ $attentionCount=$overdue->count()+$lowStock->count();
  @if($user->isOwner())
  <section class="card dashboard-revenue" aria-labelledby="dashboard-revenue-title">
   <div class="dashboard-section-top">
-   <div><h2 id="dashboard-revenue-title">Pendapatan 7 hari terakhir</h2><p>Hanya pembayaran yang sudah lunas dan diterima.</p></div>
-   <span class="dashboard-period">7 hari terakhir</span>
+   <div><h2 id="dashboard-revenue-title">Pendapatan mingguan</h2><p>Hanya pembayaran yang sudah lunas dan diterima.</p></div>
+   
   </div>
   @if($maxRevenue>0)
    <div class="dashboard-chart" role="img" aria-label="Pendapatan harian selama tujuh hari terakhir. @foreach($revenueHistory as $day){{ $day['date'] }}: Rp {{ number_format($day['total'],0,',','.') }}. @endforeach">
@@ -89,7 +89,7 @@ $attentionCount=$overdue->count()+$lowStock->count();
 
  <section class="card dashboard-recent" aria-labelledby="dashboard-recent-title">
   <div class="dashboard-section-top">
-   <div><h2 id="dashboard-recent-title">Pesanan terbaru</h2><p>Enam transaksi terbaru sesuai cabang yang dipilih.</p></div>
+   <div><h2 id="dashboard-recent-title">Pesanan terbaru</h2><p>Aktivitas pesanan terbaru.</p></div>
    <a href="{{ route('orders.index') }}" class="dashboard-text-link">Lihat semua <x-ui.icon name="arrow"/></a>
   </div>
   @if($recent->isEmpty())
