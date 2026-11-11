@@ -3,6 +3,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\OrderController;
@@ -28,6 +29,9 @@ Route::middleware(['auth','branch.context'])->group(function(){
  Route::post('/workspace/branch',[\App\Http\Controllers\ActiveBranchController::class,'update'])->middleware('role:owner')->name('active-branch.update');
  Route::post('/logout',[AuthController::class,'logout'])->name('logout');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/profile',[ProfileController::class,'edit'])->name('profile.edit');
+ Route::patch('/profile',[ProfileController::class,'update'])->name('profile.update');
+ Route::patch('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::get('/shifts',[CashShiftController::class,'index'])->name('shifts.index');
  Route::post('/shifts',[CashShiftController::class,'store'])->name('shifts.store');
  Route::patch('/shifts/{shift}/close',[CashShiftController::class,'close'])->name('shifts.close');
